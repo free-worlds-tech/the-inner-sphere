@@ -16,8 +16,11 @@ internal class SvgPlotter
         double transformedX = (1 * x) + _centerX;
         double transformedY = (-1 * y) + _centerY;
 
-        string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"3\" stroke=\"black\" stroke-width=\"0.5\" fill=\"{color}\" />";
-        _circles.Add(svg);
+        if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
+        {
+            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"3\" stroke=\"black\" stroke-width=\"0.5\" fill=\"{color}\" />";
+            _circles.Add(svg);
+        }
     }
 
     public void Write(string file)

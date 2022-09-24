@@ -5,13 +5,19 @@
         Console.WriteLine("The Inner Sphere!");
 
         string map = "all";
+        int dimension = 4200;
         if (args.Length == 1)
         {
             map = args[0].ToLower();
         }
+        else if (args.Length == 2 && String.Equals(args[1], "zoomed", StringComparison.OrdinalIgnoreCase))
+        {
+            map = args[0].ToLower();
+            dimension = 1600;
+        }
         else if (args.Length > 1)
         {
-            Console.WriteLine("Expected one argument for the map to generate.");
+            Console.WriteLine("Unexpected number of arguments");
             return;
         }
 
@@ -77,7 +83,7 @@
 
 
         Console.Write("Creating map...");
-        var plotter = new SvgPlotter(4200, 4200);
+        var plotter = new SvgPlotter(dimension, dimension);
         foreach (var id in planetRepo.GetPlanetIds())
         {
             var planet = planetRepo.GetPlanetInfo(id);
