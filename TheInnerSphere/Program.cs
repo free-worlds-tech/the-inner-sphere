@@ -83,13 +83,20 @@
 
 
         Console.Write("Creating map...");
-        var plotter = new SvgPlotter(dimension, dimension);
+        ColorMapping? palette = null;
+        if (map != "all")
+        {
+            palette = (PlanetInfo system) => {
+                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                return faction.Color;
+            };
+        }
+        var plotter = new SvgPlotter(new PlotterSettings(dimension, dimension, palette));
         foreach (var id in planetRepo.GetPlanetIds())
         {
             var planet = planetRepo.GetPlanetInfo(id);
 
             var plotPlanet = false;
-            string color = "#ffffff";
 
             if (map == "all")
             {
@@ -102,15 +109,13 @@
                 if (faction.Id != "A" && faction.Id != "U" && faction.Id != "")
                 {
                     plotPlanet = true;
-                    color = faction.Color;
                 }
             }
 
             if (plotPlanet)
             {
-                plotter.Add(planet.Coordinates.X, planet.Coordinates.Y, color);
+                plotter.Add(planet);
             }
-
         }
 
         plotter.Write("output.svg");
