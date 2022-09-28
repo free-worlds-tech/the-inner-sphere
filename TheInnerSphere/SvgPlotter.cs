@@ -31,9 +31,10 @@ internal class SvgPlotter
 
         if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
         {
-            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"12\" stroke=\"black\" stroke-width=\"1\" fill=\"{color}\" />";
-            string label = $"<text x=\"{transformedX}\" y=\"{transformedY - 16}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" stroke=\"black\" stroke-width=\"0.5\">{system.Name}</text>";
+            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"12\" stroke=\"#000000\" stroke-width=\"1\" fill=\"{color}\" />";
             _circles.Add(svg);
+
+            string label = $"<text x=\"{transformedX}\" y=\"{transformedY - 16}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" stroke=\"black\" stroke-width=\"0.25\">{system.Name}</text>";
             _text.Add(label);
 
             _systems.Add(system);
@@ -68,17 +69,18 @@ internal class SvgPlotter
     {
         for (int i = 0; i < _systems.Count; i++)
         {
+            var system1 = _systems[i];
+            double x1 = (_scale * system1.Coordinates.X) + _centerX;
+            double y1 = (-1 * _scale * system1.Coordinates.Y) + _centerY;
+
             for (int j = i + 1; j < _systems.Count; j++)
             {
-                var system1 = _systems[i];
                 var system2 = _systems[j];
                 if (IsSingleJump(system1, system2))
                 {
-                    double x1 = (_scale * system1.Coordinates.X) + _centerX;
-                    double y1 = (-1 * _scale * system1.Coordinates.Y) + _centerY;
                     double x2 = (_scale * system2.Coordinates.X) + _centerX;
                     double y2 = (-1 * _scale * system2.Coordinates.Y) + _centerY;
-                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"#888888\" stroke-width=\"0.25\" />";
+                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"#666666\" stroke-width=\"1\" />";
                     _lines.Add(svg);
                 }
             }
