@@ -83,15 +83,50 @@
 
 
         Console.Write("Creating map...");
-        ColorMapping? palette = null;
+        SystemColorMapping? systemPalette = null;
         if (map != "all")
         {
-            palette = (PlanetInfo system) => {
+            systemPalette = (PlanetInfo system) => {
                 var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
                 return faction.Color;
             };
         }
-        var plotter = new SvgPlotter(new PlotterSettings(dimension, dimension, palette));
+        LinkColorMapping? linkPalette = null;
+        if (map != "all")
+        {
+            linkPalette = (PlanetInfo system1, PlanetInfo system2) => {
+                var owner1 = system1.Owners.GetOwner(map);
+                var owner2 = system2.Owners.GetOwner(map);
+
+                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1))
+                {
+                    return factionRepo.GetFactionInfo(owner1).Color;
+                }
+                else
+                {
+                    return factionRepo.GetFactionInfo("D").Color;
+                }
+            };
+        }
+        SystemSubtitleMapping subtitleMapping = (PlanetInfo system) => {
+            var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+            return faction.Name.ToUpper();
+        };
+        var plotterSettings = new PlotterSettings()
+        {
+            Width = dimension,
+            Height = dimension,
+            SystemPalette = systemPalette,
+            SystemSubtitleMapping = subtitleMapping,
+            LinkPalette = linkPalette,
+            Scale = 15
+
+            // Alternate settings just to show faction shapes
+            // Scale = 1,
+            // SystemRadius = 3,
+            // IncludeSystemNames = false
+        };
+        var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())
         {
             var planet = planetRepo.GetPlanetInfo(id);

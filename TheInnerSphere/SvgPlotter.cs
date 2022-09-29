@@ -4,32 +4,55 @@ internal class SvgPlotter
     {
         _circles = new List<string>();
         _lines = new List<string>();
+        _text = new List<string>();
         _systems = new List<PlanetInfo>();
 
-        _width = settings.Width * 1;
-        _height = settings.Height * 1;
+        _scale = settings.Scale;
+
+        _width = (int)Math.Ceiling(settings.Width * _scale);
+        _height = (int)Math.Ceiling(settings.Height * _scale);
 
         _centerX = _width / 2.0;
         _centerY = _height / 2.0;
 
-        _palette = settings.Palette;
+        _systemRadius = settings.SystemRadius;
+        _systemPalette = settings.SystemPalette;
+        _subtitleMapping = settings.SystemSubtitleMapping;
+        _linkPalette = settings.LinkPalette;
+
+        _includeJumpLines = settings.IncludeJumpLines;
+        _includeSystemNames = settings.IncludeSystemNames;
     }
 
     public void Add(PlanetInfo system)
     {
-        double transformedX = (1 * system.Coordinates.X) + _centerX;
-        double transformedY = (-1 * system.Coordinates.Y) + _centerY;
+        double transformedX = (_scale * system.Coordinates.X) + _centerX;
+        double transformedY = (-1 * _scale * system.Coordinates.Y) + _centerY;
 
         var color = "#ffffff";
-        if (_palette != null)
+        if (_systemPalette != null)
         {
-            color = _palette(system);
+            color = _systemPalette(system);
         }
 
         if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
         {
-            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"3\" stroke=\"black\" stroke-width=\"0.5\" fill=\"{color}\" />";
+            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"{_systemRadius}\" stroke=\"#000000\" stroke-width=\"1\" fill=\"{color}\" />";
             _circles.Add(svg);
+
+            if (_includeSystemNames)
+            {
+                string label = $"<text x=\"{transformedX}\" y=\"{transformedY - 22}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" stroke=\"black\" stroke-width=\"0.25\">{system.Name}</text>";
+                _text.Add(label);
+
+                if (_subtitleMapping != null)
+                {
+                    string subtitle = _subtitleMapping(system);
+                    string subtitleElement = $"<text x=\"{transformedX}\" y=\"{transformedY - 14}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"6\" stroke=\"black\" stroke-width=\"0.25\">{subtitle}</text>";
+                    _text.Add(subtitleElement);
+                }
+                
+            }
 
             _systems.Add(system);
         }
@@ -37,7 +60,10 @@ internal class SvgPlotter
 
     public void Write(string file)
     {
-        GenerateLines();
+        if (_includeJumpLines)
+        {
+            GenerateLines();
+        }
         using (var writer = new StreamWriter(file))
         {
             writer.WriteLine("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
@@ -51,25 +77,37 @@ internal class SvgPlotter
             {
                 writer.WriteLine($"  {circle}");
             }
+            foreach (var text in _text)
+            {
+                writer.WriteLine($"  {text}");
+            }
             writer.WriteLine("</svg>");
         }
     }
 
     private void GenerateLines()
     {
+        _lines = new List<string>();
         for (int i = 0; i < _systems.Count; i++)
         {
+            var system1 = _systems[i];
+            double x1 = (_scale * system1.Coordinates.X) + _centerX;
+            double y1 = (-1 * _scale * system1.Coordinates.Y) + _centerY;
+
             for (int j = i + 1; j < _systems.Count; j++)
             {
-                var system1 = _systems[i];
                 var system2 = _systems[j];
                 if (IsSingleJump(system1, system2))
                 {
-                    double x1 = (1 * system1.Coordinates.X) + _centerX;
-                    double y1 = (-1 * system1.Coordinates.Y) + _centerY;
-                    double x2 = (1 * system2.Coordinates.X) + _centerX;
-                    double y2 = (-1 * system2.Coordinates.Y) + _centerY;
-                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"#cccccc\" stroke-width=\"0.25\" />";
+                    double x2 = (_scale * system2.Coordinates.X) + _centerX;
+                    double y2 = (-1 * _scale * system2.Coordinates.Y) + _centerY;
+
+                    string color = "#666666";
+                    if (_linkPalette != null)
+                    {
+                        color = _linkPalette(system1, system2);
+                    }
+                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"1\" opacity=\"0.5\" />";
                     _lines.Add(svg);
                 }
             }
@@ -85,9 +123,16 @@ internal class SvgPlotter
     private List<PlanetInfo> _systems;
     private List<string> _circles;
     private List<string> _lines;
+    private List<string> _text;
     private int _width;
     private int _height;
     private double _centerX;
     private double _centerY;
-    private ColorMapping? _palette;
+    private double _scale;
+    private SystemColorMapping? _systemPalette;
+    private SystemSubtitleMapping? _subtitleMapping;
+    private LinkColorMapping? _linkPalette;
+    private int _systemRadius;
+    private bool _includeJumpLines;
+    private bool _includeSystemNames;
 }
