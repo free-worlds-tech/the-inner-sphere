@@ -119,10 +119,12 @@
             SystemPalette = systemPalette,
             SystemSubtitleMapping = subtitleMapping,
             LinkPalette = linkPalette,
-            //Scale = 15
-            Scale = 1,
-            SystemRadius = 3,
-            IncludeSystemNames = false
+            Scale = 15
+
+            // Alternate settings just to show faction shapes
+            // Scale = 1,
+            // SystemRadius = 3,
+            // IncludeSystemNames = false
         };
         var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())
