@@ -15,6 +15,9 @@ internal class SvgPlotter
         _centerX = _width / 2.0;
         _centerY = _height / 2.0;
 
+        _transformX = settings.Center.X;
+        _transformY = settings.Center.Y;
+
         _systemRadius = settings.SystemRadius;
         _systemPalette = settings.SystemPalette;
         _subtitleMapping = settings.SystemSubtitleMapping;
@@ -26,8 +29,7 @@ internal class SvgPlotter
 
     public void Add(PlanetInfo system)
     {
-        double transformedX = (_scale * system.Coordinates.X) + _centerX;
-        double transformedY = (-1 * _scale * system.Coordinates.Y) + _centerY;
+        (double transformedX, double transformedY) = TransformCoordinates(system.Coordinates);
 
         var color = "#ffffff";
         if (_systemPalette != null)
@@ -35,6 +37,7 @@ internal class SvgPlotter
             color = _systemPalette(system);
         }
 
+        double overshoot = 30 * _scale;
         if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
         {
             string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"{_systemRadius}\" stroke=\"#000000\" stroke-width=\"1\" fill=\"{color}\" />";
@@ -54,6 +57,10 @@ internal class SvgPlotter
                 
             }
 
+            _systems.Add(system);
+        }
+        else if (transformedX > (0 - overshoot) && transformedX < (_width + overshoot) && transformedY > (0 - overshoot) && transformedY < (_height + overshoot))
+        {
             _systems.Add(system);
         }
     }
@@ -91,16 +98,14 @@ internal class SvgPlotter
         for (int i = 0; i < _systems.Count; i++)
         {
             var system1 = _systems[i];
-            double x1 = (_scale * system1.Coordinates.X) + _centerX;
-            double y1 = (-1 * _scale * system1.Coordinates.Y) + _centerY;
+            (double x1, double y1) = TransformCoordinates(system1.Coordinates);
 
             for (int j = i + 1; j < _systems.Count; j++)
             {
                 var system2 = _systems[j];
                 if (IsSingleJump(system1, system2))
                 {
-                    double x2 = (_scale * system2.Coordinates.X) + _centerX;
-                    double y2 = (-1 * _scale * system2.Coordinates.Y) + _centerY;
+                    (double x2, double y2) = TransformCoordinates(system2.Coordinates);
 
                     string color = "#666666";
                     if (_linkPalette != null)
@@ -120,6 +125,13 @@ internal class SvgPlotter
         return (distanceSquared <= 900);
     }
 
+    private (double, double) TransformCoordinates(SystemCoordinates coordinates)
+    {
+        double transformedX = (_scale * (coordinates.X - _transformX)) + _centerX;
+        double transformedY = (-1 * _scale * (coordinates.Y - _transformY)) + _centerY;
+        return (transformedX, transformedY);
+    }
+
     private List<PlanetInfo> _systems;
     private List<string> _circles;
     private List<string> _lines;
@@ -128,6 +140,8 @@ internal class SvgPlotter
     private int _height;
     private double _centerX;
     private double _centerY;
+    private double _transformX;
+    private double _transformY;
     private double _scale;
     private SystemColorMapping? _systemPalette;
     private SystemSubtitleMapping? _subtitleMapping;

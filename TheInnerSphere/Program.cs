@@ -98,7 +98,7 @@
                 var owner1 = system1.Owners.GetOwner(map);
                 var owner2 = system2.Owners.GetOwner(map);
 
-                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1))
+                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1) && !String.Equals("A", owner1))
                 {
                     return factionRepo.GetFactionInfo(owner1).Color;
                 }
@@ -119,12 +119,17 @@
             SystemPalette = systemPalette,
             SystemSubtitleMapping = subtitleMapping,
             LinkPalette = linkPalette,
-            Scale = 15
+            Scale = 15,
 
             // Alternate settings just to show faction shapes
             // Scale = 1,
             // SystemRadius = 3,
             // IncludeSystemNames = false
+
+            // Center on Luthien
+            // Width = 240,
+            // Height = 240,
+            // Center = new SystemCoordinates(167.621, 250.493)
         };
         var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())

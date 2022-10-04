@@ -14,10 +14,12 @@ internal class PlotterSettings
         SystemRadius = 12;
         IncludeJumpLines = true;
         IncludeSystemNames = true;
+        Center = new SystemCoordinates(0,0);
     }
 
     public int Width { get; set; }
     public int Height { get; set; }
+    public SystemCoordinates Center { get; set; }
     public SystemColorMapping? SystemPalette { get; set; }
     public SystemSubtitleMapping? SystemSubtitleMapping { get; set; }
     public LinkColorMapping? LinkPalette { get; set; }
