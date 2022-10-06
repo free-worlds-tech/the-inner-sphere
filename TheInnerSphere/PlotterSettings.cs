@@ -1,6 +1,7 @@
 internal delegate string SystemColorMapping(PlanetInfo system);
 internal delegate string LinkColorMapping(PlanetInfo system1, PlanetInfo system2);
 internal delegate string SystemSubtitleMapping(PlanetInfo system);
+internal delegate bool ImportantWorldMapping(PlanetInfo system);
 
 internal class PlotterSettings
 {
@@ -15,6 +16,9 @@ internal class PlotterSettings
         IncludeJumpLines = true;
         IncludeSystemNames = true;
         Center = new SystemCoordinates(0,0);
+        PrimaryFontSize = 16;
+        SecondaryFontSize = 6;
+        LinkStrokeWidth = 1;
     }
 
     public int Width { get; set; }
@@ -23,8 +27,12 @@ internal class PlotterSettings
     public SystemColorMapping? SystemPalette { get; set; }
     public SystemSubtitleMapping? SystemSubtitleMapping { get; set; }
     public LinkColorMapping? LinkPalette { get; set; }
+    public ImportantWorldMapping? ImportantWorldMapping { get; set; }
     public int Scale { get; set; }
     public int SystemRadius { get; set; }
     public bool IncludeJumpLines { get; set; }
     public bool IncludeSystemNames { get; set; }
+    public int PrimaryFontSize { get; set; }
+    public int SecondaryFontSize { get; set; }
+    public double LinkStrokeWidth { get; set; }
 }

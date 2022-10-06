@@ -22,9 +22,15 @@ internal class SvgPlotter
         _systemPalette = settings.SystemPalette;
         _subtitleMapping = settings.SystemSubtitleMapping;
         _linkPalette = settings.LinkPalette;
+        _linkStrokeWidth = settings.LinkStrokeWidth;
+
+        _importantMapping = settings.ImportantWorldMapping;
 
         _includeJumpLines = settings.IncludeJumpLines;
         _includeSystemNames = settings.IncludeSystemNames;
+
+        _primaryFontSize = settings.PrimaryFontSize;
+        _secondaryFontSize = settings.SecondaryFontSize;
     }
 
     public void Add(PlanetInfo system)
@@ -40,18 +46,27 @@ internal class SvgPlotter
         double overshoot = 30 * _scale;
         if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
         {
-            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"{_systemRadius}\" stroke=\"#000000\" stroke-width=\"1\" fill=\"{color}\" />";
+            bool systemIsImportant = false;
+            if (_importantMapping != null)
+            {
+                systemIsImportant = _importantMapping(system);
+            }
+
+            var radius = systemIsImportant ? _systemRadius * 2 : _systemRadius;
+            string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"{radius}\" stroke=\"#000000\" stroke-width=\"1\" fill=\"{color}\" />";
             _circles.Add(svg);
 
             if (_includeSystemNames)
             {
-                string label = $"<text x=\"{transformedX}\" y=\"{transformedY - 22}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"16\" stroke=\"black\" stroke-width=\"0.25\">{system.Name}</text>";
+                int mainFontSize = _primaryFontSize;
+                int subFontSize = _secondaryFontSize;
+                string label = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + subFontSize + 4)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{mainFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{system.Name}</text>";
                 _text.Add(label);
 
                 if (_subtitleMapping != null)
                 {
                     string subtitle = _subtitleMapping(system);
-                    string subtitleElement = $"<text x=\"{transformedX}\" y=\"{transformedY - 14}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"6\" stroke=\"black\" stroke-width=\"0.25\">{subtitle}</text>";
+                    string subtitleElement = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + 2)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{subFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{subtitle}</text>";
                     _text.Add(subtitleElement);
                 }
                 
@@ -112,7 +127,7 @@ internal class SvgPlotter
                     {
                         color = _linkPalette(system1, system2);
                     }
-                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"1\" opacity=\"0.5\" />";
+                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"{_linkStrokeWidth}\" opacity=\"0.3\" />";
                     _lines.Add(svg);
                 }
             }
@@ -146,7 +161,11 @@ internal class SvgPlotter
     private SystemColorMapping? _systemPalette;
     private SystemSubtitleMapping? _subtitleMapping;
     private LinkColorMapping? _linkPalette;
+    private ImportantWorldMapping? _importantMapping;
     private int _systemRadius;
     private bool _includeJumpLines;
     private bool _includeSystemNames;
+    private int _primaryFontSize;
+    private int _secondaryFontSize;
+    private double _linkStrokeWidth;
 }

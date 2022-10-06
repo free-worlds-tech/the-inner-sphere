@@ -112,12 +112,24 @@
             var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
             return faction.Name.ToUpper();
         };
+        ImportantWorldMapping importantWorldMapping = (PlanetInfo system) => {
+            var note = system.Owners.GetOwnershipNote(map);
+            if (note.ToLower().Contains("faction capital"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        };
         var plotterSettings = new PlotterSettings()
         {
             Width = dimension,
             Height = dimension,
             SystemPalette = systemPalette,
             SystemSubtitleMapping = subtitleMapping,
+            ImportantWorldMapping = importantWorldMapping,
             LinkPalette = linkPalette,
             Scale = 15,
 
@@ -126,7 +138,7 @@
             // SystemRadius = 3,
             // IncludeSystemNames = false
 
-            // Center on Luthien
+            // Example to center on Luthien
             // Width = 240,
             // Height = 240,
             // Center = new SystemCoordinates(167.621, 250.493)

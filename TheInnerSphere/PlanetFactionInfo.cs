@@ -81,7 +81,7 @@ internal class PlanetFactionInfo
             var entries =  _owners[map].Split(',', StringSplitOptions.TrimEntries);
             if (entries.Length > 1)
             {
-                return String.Join(", ", entries.Take(new Range(1,entries.Length - 1)));
+                return String.Join(", ", entries.Take(new Range(1,entries.Length)));
             }
             else
             {
