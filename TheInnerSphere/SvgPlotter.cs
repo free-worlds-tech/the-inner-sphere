@@ -20,6 +20,7 @@ internal class SvgPlotter
 
         _systemRadius = settings.SystemRadius;
         _systemPalette = settings.SystemPalette;
+        _titleMapping = settings.SystemTitleMapping;
         _subtitleMapping = settings.SystemSubtitleMapping;
         _linkPalette = settings.LinkPalette;
         _linkStrokeWidth = settings.LinkStrokeWidth;
@@ -60,7 +61,12 @@ internal class SvgPlotter
             {
                 int mainFontSize = _primaryFontSize;
                 int subFontSize = _secondaryFontSize;
-                string label = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + subFontSize + 4)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{mainFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{system.Name}</text>";
+                string title = system.Name;
+                if (_titleMapping != null)
+                {
+                    title = _titleMapping(system);
+                }
+                string label = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + subFontSize + 4)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{mainFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{title}</text>";
                 _text.Add(label);
 
                 if (_subtitleMapping != null)
@@ -159,6 +165,7 @@ internal class SvgPlotter
     private double _transformY;
     private double _scale;
     private SystemColorMapping? _systemPalette;
+    private SystemTitleMapping? _titleMapping;
     private SystemSubtitleMapping? _subtitleMapping;
     private LinkColorMapping? _linkPalette;
     private ImportantWorldMapping? _importantMapping;

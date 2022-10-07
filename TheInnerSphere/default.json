@@ -1,0 +1,9 @@
+{
+    "Height":1600,
+    "Width":1600,
+    "Center":"Sol",
+    "SystemTitles":"name",
+    "SystemSubtitles":"faction",
+    "SystemColors":"faction",
+    "LinkColors":"faction"
+}

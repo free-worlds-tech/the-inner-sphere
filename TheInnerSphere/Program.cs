@@ -1,24 +1,37 @@
-﻿internal class Program
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+internal class Program
 {
     private static void Main(string[] args)
     {
         Console.WriteLine("The Inner Sphere!");
 
         string map = "all";
-        int dimension = 4200;
+        string settingsFile = "default.json";
         if (args.Length == 1)
         {
             map = args[0].ToLower();
         }
-        else if (args.Length == 2 && String.Equals(args[1], "zoomed", StringComparison.OrdinalIgnoreCase))
+        else if (args.Length == 2)
         {
             map = args[0].ToLower();
-            dimension = 1600;
+            settingsFile = args[1];
         }
-        else if (args.Length > 1)
+        else if (args.Length > 2)
         {
             Console.WriteLine("Unexpected number of arguments");
             return;
+        }
+
+        ProgramSettings settings = new ProgramSettings();
+        using (var stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read))
+        {
+            ProgramSettings? deserialized = JsonSerializer.Deserialize<ProgramSettings>(stream);
+            if (deserialized != null)
+            {
+                settings = deserialized;
+            }
         }
 
         switch (map)
@@ -81,18 +94,52 @@
 
         Console.WriteLine(" Done!");
 
+        var centerCoordinates = new SystemCoordinates(0,0);
+        if (settings.Center != null)
+        {
+            var matchingSystems = planetRepo.GetPlanetInfo(settings.Center);
+            if (matchingSystems.Count == 1)
+            {
+                centerCoordinates = matchingSystems[0].Coordinates;
+            }
+            else if (matchingSystems.Count == 0)
+            {
+                Console.Error.WriteLine($"No system found with name: {settings.Center}");
+                return;
+            }
+            else if (matchingSystems.Count > 1)
+            {
+                Console.Error.WriteLine($"Multiple systems found with name: {settings.Center}");
+                return;
+            }
+        }
+
 
         Console.Write("Creating map...");
         SystemColorMapping? systemPalette = null;
-        if (map != "all")
+        if (map != "all" && String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             systemPalette = (PlanetInfo system) => {
                 var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
                 return faction.Color;
             };
         }
+        else
+        {
+            systemPalette = (PlanetInfo system) => {
+                if (!String.IsNullOrEmpty(settings.SystemColors))
+                {
+                    return settings.SystemColors;
+                }
+                else
+                {
+                    return "#ffffff";
+                }
+            };
+        }
+
         LinkColorMapping? linkPalette = null;
-        if (map != "all")
+        if (map != "all" && String.Equals(settings.LinkColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             linkPalette = (PlanetInfo system1, PlanetInfo system2) => {
                 var owner1 = system1.Owners.GetOwner(map);
@@ -108,10 +155,57 @@
                 }
             };
         }
-        SystemSubtitleMapping subtitleMapping = (PlanetInfo system) => {
-            var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
-            return faction.Name.ToUpper();
-        };
+        else
+        {
+            linkPalette = (PlanetInfo system1, PlanetInfo system2) => {
+                if (!String.IsNullOrEmpty(settings.LinkColors))
+                {
+                    return settings.LinkColors;
+                }
+                else
+                {
+                    return "#ffffff";
+                }
+            };
+        }
+
+        SystemTitleMapping? titleMapping = null;
+        if (String.Equals(settings.SystemTitles, "name", StringComparison.InvariantCultureIgnoreCase))
+        {
+            titleMapping = (PlanetInfo system) => {
+                return system.Name;
+            };
+        }
+        else if (String.Equals(settings.SystemTitles, "none", StringComparison.InvariantCultureIgnoreCase))
+        {
+            titleMapping = (PlanetInfo system) => {
+                return "";
+            };
+        }
+        else
+        {
+            Console.Error.WriteLine($"Unsupported title type: {settings.SystemSubtitles}");
+            return;
+        }
+
+        SystemSubtitleMapping? subtitleMapping = null;
+        if (map != "all" && String.Equals(settings.SystemSubtitles, "faction", StringComparison.InvariantCultureIgnoreCase))
+        {
+            subtitleMapping = (PlanetInfo system) => {
+                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                return faction.Name.ToUpper();
+            };
+        }
+        else if (map == "all" || String.Equals(settings.SystemSubtitles, "none", StringComparison.InvariantCultureIgnoreCase))
+        {
+            subtitleMapping = null;
+        }
+        else
+        {
+            Console.Error.WriteLine($"Unsupported subtitle type: {settings.SystemSubtitles}");
+            return;
+        }
+
         ImportantWorldMapping importantWorldMapping = (PlanetInfo system) => {
             var note = system.Owners.GetOwnershipNote(map);
             if (note.ToLower().Contains("faction capital"))
@@ -125,23 +219,23 @@
         };
         var plotterSettings = new PlotterSettings()
         {
-            Width = dimension,
-            Height = dimension,
+            // From settings.json
+            Width = settings.Width,
+            Height = settings.Height,
+            Center = centerCoordinates,
             SystemPalette = systemPalette,
+            SystemTitleMapping = titleMapping,
             SystemSubtitleMapping = subtitleMapping,
-            ImportantWorldMapping = importantWorldMapping,
             LinkPalette = linkPalette,
+
+            // Todo...
+            ImportantWorldMapping = importantWorldMapping,
             Scale = 15,
 
             // Alternate settings just to show faction shapes
             // Scale = 1,
             // SystemRadius = 3,
             // IncludeSystemNames = false
-
-            // Example to center on Luthien
-            // Width = 240,
-            // Height = 240,
-            // Center = new SystemCoordinates(167.621, 250.493)
         };
         var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())

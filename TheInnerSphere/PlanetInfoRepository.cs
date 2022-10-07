@@ -23,6 +23,12 @@ internal class PlanetInfoRepository
         }
     }
 
+    public IReadOnlyList<PlanetInfo> GetPlanetInfo(string name)
+    {
+        var matches = _planets.Values.Where((v) => String.Equals(name, v.Name, StringComparison.InvariantCultureIgnoreCase));
+        return new List<PlanetInfo>(matches);
+    }
+
     private void ParseDataFile(string file)
     {
         using (var reader = new StreamReader(file))

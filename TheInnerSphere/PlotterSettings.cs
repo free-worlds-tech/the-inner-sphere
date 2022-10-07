@@ -1,5 +1,6 @@
 internal delegate string SystemColorMapping(PlanetInfo system);
 internal delegate string LinkColorMapping(PlanetInfo system1, PlanetInfo system2);
+internal delegate string SystemTitleMapping(PlanetInfo system);
 internal delegate string SystemSubtitleMapping(PlanetInfo system);
 internal delegate bool ImportantWorldMapping(PlanetInfo system);
 
@@ -25,6 +26,7 @@ internal class PlotterSettings
     public int Height { get; set; }
     public SystemCoordinates Center { get; set; }
     public SystemColorMapping? SystemPalette { get; set; }
+    public SystemTitleMapping? SystemTitleMapping { get; set; }
     public SystemSubtitleMapping? SystemSubtitleMapping { get; set; }
     public LinkColorMapping? LinkPalette { get; set; }
     public ImportantWorldMapping? ImportantWorldMapping { get; set; }
