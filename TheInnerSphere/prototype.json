@@ -1,0 +1,15 @@
+{
+    "Height":1600,
+    "Width":1600,
+    "Scale":9,
+    "Center":"Sol",
+    "SystemTitles":"name",
+    "SystemSubtitles":"none",
+    "SystemColors":"faction",
+    "SystemRadius":13,
+    "LinkColors":"faction",
+    "LinkStrokeWidth":1.5,
+    "LinkOpacity":0.3,
+    "TitleFontSize":28,
+    "SubtitleFontSize":0
+}

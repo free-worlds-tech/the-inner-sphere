@@ -24,6 +24,7 @@ internal class SvgPlotter
         _subtitleMapping = settings.SystemSubtitleMapping;
         _linkPalette = settings.LinkPalette;
         _linkStrokeWidth = settings.LinkStrokeWidth;
+        _linkOpacity = settings.LinkOpacity;
 
         _importantMapping = settings.ImportantWorldMapping;
 
@@ -133,7 +134,7 @@ internal class SvgPlotter
                     {
                         color = _linkPalette(system1, system2);
                     }
-                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"{_linkStrokeWidth}\" opacity=\"0.3\" />";
+                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"{_linkStrokeWidth}\" opacity=\"{_linkOpacity}\" />";
                     _lines.Add(svg);
                 }
             }
@@ -175,4 +176,5 @@ internal class SvgPlotter
     private int _primaryFontSize;
     private int _secondaryFontSize;
     private double _linkStrokeWidth;
+    private double _linkOpacity;
 }

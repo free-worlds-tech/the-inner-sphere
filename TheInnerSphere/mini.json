@@ -7,5 +7,6 @@
     "SystemSubtitles":"none",
     "SystemColors":"faction",
     "SystemRadius":3,
-    "LinkColors":"faction"
+    "LinkColors":"faction",
+    "LinkStrokeWidth":1.5
 }

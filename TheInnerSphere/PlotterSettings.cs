@@ -20,6 +20,7 @@ internal class PlotterSettings
         PrimaryFontSize = 16;
         SecondaryFontSize = 6;
         LinkStrokeWidth = 1;
+        LinkOpacity = 0.5;
     }
 
     public int Width { get; set; }
@@ -37,4 +38,5 @@ internal class PlotterSettings
     public int PrimaryFontSize { get; set; }
     public int SecondaryFontSize { get; set; }
     public double LinkStrokeWidth { get; set; }
+    public double LinkOpacity { get; set; }
 }

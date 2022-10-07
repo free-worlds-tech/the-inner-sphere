@@ -115,7 +115,7 @@ internal class Program
         }
 
 
-        Console.Write("Creating map...");
+        
         SystemColorMapping? systemPalette = null;
         if (map != "all" && String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
@@ -229,10 +229,15 @@ internal class Program
             SystemSubtitleMapping = subtitleMapping,
             SystemRadius = settings.SystemRadius,
             LinkPalette = linkPalette,
+            LinkStrokeWidth = settings.LinkStrokeWidth,
+            PrimaryFontSize = settings.TitleFontSize,
+            SecondaryFontSize = settings.SubtitleFontSize,
 
             // Todo...
             ImportantWorldMapping = importantWorldMapping,
         };
+
+        Console.Write("Creating map...");
         var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())
         {
@@ -247,10 +252,19 @@ internal class Program
             else
             {
                 var faction = factionRepo.GetFactionInfo(planet.Owners.GetOwner(map));
-
-                if (faction.Id != "A" && faction.Id != "U" && faction.Id != "")
+                
+                plotPlanet = true;
+                if (!settings.IncludeAbandonedSystems && faction.Id == "A")
                 {
-                    plotPlanet = true;
+                    plotPlanet = false;
+                }
+                if (!settings.IncludeUndiscoveredSystems && faction.Id == "U")
+                {
+                    plotPlanet = false;
+                }
+                if (!settings.IncludeSystemsWithUnknownStatus && faction.Id == "")
+                {
+                    plotPlanet = false;
                 }
             }
 
