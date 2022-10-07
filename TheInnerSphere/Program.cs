@@ -223,19 +223,15 @@ internal class Program
             Width = settings.Width,
             Height = settings.Height,
             Center = centerCoordinates,
+            Scale = settings.Scale,
             SystemPalette = systemPalette,
             SystemTitleMapping = titleMapping,
             SystemSubtitleMapping = subtitleMapping,
+            SystemRadius = settings.SystemRadius,
             LinkPalette = linkPalette,
 
             // Todo...
             ImportantWorldMapping = importantWorldMapping,
-            Scale = 15,
-
-            // Alternate settings just to show faction shapes
-            // Scale = 1,
-            // SystemRadius = 3,
-            // IncludeSystemNames = false
         };
         var plotter = new SvgPlotter(plotterSettings);
         foreach (var id in planetRepo.GetPlanetIds())

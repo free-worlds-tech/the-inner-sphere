@@ -1,9 +1,11 @@
 {
     "Height":4200,
     "Width":4200,
+    "Scale":15,
     "Center":"Sol",
     "SystemTitles":"name",
     "SystemSubtitles":"faction",
     "SystemColors":"faction",
+    "SystemRadius":12,
     "LinkColors":"faction"
 }
