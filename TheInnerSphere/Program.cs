@@ -172,6 +172,20 @@ internal class Program
         SystemTitleMapping? titleMapping = null;
         if (String.Equals(settings.SystemTitles, "name", StringComparison.InvariantCultureIgnoreCase))
         {
+            titleMapping = (PlanetInfo system) => 
+            {
+                if (map.Length >= 4 && Int32.TryParse(map.Substring(0,4), out int parsedYear))
+                { 
+                    return system.GetNameByYear(parsedYear);
+                }
+                else
+                {
+                    return system.Name;
+                }
+            };
+        }
+        else if (String.Equals(settings.SystemTitles, "static-name", StringComparison.InvariantCultureIgnoreCase))
+        {
             titleMapping = (PlanetInfo system) => {
                 return system.Name;
             };
@@ -196,9 +210,22 @@ internal class Program
                 return faction.Name.ToUpper();
             };
         }
-        else if (map == "all" || String.Equals(settings.SystemSubtitles, "none", StringComparison.InvariantCultureIgnoreCase))
+        else if (String.Equals(settings.SystemSubtitles, "none", StringComparison.InvariantCultureIgnoreCase))
         {
             subtitleMapping = null;
+        }
+        else if (String.Equals(settings.SystemSubtitles, "alt-names", StringComparison.InvariantCultureIgnoreCase))
+        {
+            subtitleMapping = (PlanetInfo system) => {
+                if (system.AlternateNames.Count > 0)
+                {
+                    return String.Join(", ", system.AlternateNames);
+                }
+                else
+                {
+                    return "";
+                }
+            };
         }
         else
         {

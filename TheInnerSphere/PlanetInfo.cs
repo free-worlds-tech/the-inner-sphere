@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 internal class PlanetInfo
 {
     public PlanetInfo(string[] entries)
@@ -10,11 +12,46 @@ internal class PlanetInfo
         Coordinates = new SystemCoordinates(Double.Parse(entries[3]), Double.Parse(entries[4]));
         SarnaUrl = entries[6];
         Owners = new PlanetFactionInfo(entries);
+
+        var altNames = new List<string>();
+        if (!String.IsNullOrEmpty(entries[2]))
+        {
+            var alternates = entries[2].Split(",", StringSplitOptions.TrimEntries);
+            foreach (var alternate in alternates)
+            {
+                altNames.Add(alternate);
+            }
+        }
+        AlternateNames = altNames;
     }
 
     public string Name { get; }
+    public IReadOnlyList<string> AlternateNames { get; }
     public uint Id { get;  }
     public SystemCoordinates Coordinates { get; }
     public string SarnaUrl { get; }
     public PlanetFactionInfo Owners { get; }
+
+    public string GetNameByYear(int year)
+    {
+        var name = Name;
+        foreach (var alternate in AlternateNames)
+        {
+            var pattern = @"([0-9]*)\+";
+            if (Regex.IsMatch(alternate, pattern))
+            {
+                var match = Regex.Match(alternate, pattern);
+                if (match.Groups.Count == 2)
+                {
+                    string yearString = match.Groups[1].Value;
+                    int renameYear = Int32.Parse(yearString);
+                    if (renameYear <= year)
+                    {
+                        return alternate.Substring(0, alternate.IndexOf('(')).Trim();
+                    }
+                }
+            }
+        }
+        return name;
+    }
 }

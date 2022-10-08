@@ -18,9 +18,9 @@ internal class ProgramSettings
 
     public int Scale { get; set; }
 
-    public string? SystemTitles { get; set; } // none, name
+    public string? SystemTitles { get; set; } // none, name, static-name
     public int TitleFontSize { get; set; }
-    public string? SystemSubtitles { get; set; } // none, faction
+    public string? SystemSubtitles { get; set; } // none, faction, alt-names
     public int SubtitleFontSize { get; set; }
     public int SystemRadius { get; set; }
 
