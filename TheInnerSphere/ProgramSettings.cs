@@ -14,7 +14,7 @@ internal class ProgramSettings
     public int Height { get; set; }
     public int Width { get; set; } 
 
-    public string? Center { get; set; } // system name, x,y
+    public string? Center { get; set; } // system name
 
     public int Scale { get; set; }
 
