@@ -41,7 +41,7 @@ internal class PlanetInfo
             if (Regex.IsMatch(alternate, pattern))
             {
                 var match = Regex.Match(alternate, pattern);
-                if (match.Groups.Count == 2)
+                if (match.Groups.Count == 2 && !String.IsNullOrEmpty(match.Groups[1].Value))
                 {
                     string yearString = match.Groups[1].Value;
                     int renameYear = Int32.Parse(yearString);
