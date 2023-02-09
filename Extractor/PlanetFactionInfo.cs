@@ -1,4 +1,4 @@
-internal class PlanetFactionInfo: IPlanetFactionInfo
+internal class PlanetFactionInfo
 {
     public PlanetFactionInfo(string[] entries)
     {

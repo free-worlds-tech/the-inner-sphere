@@ -81,6 +81,7 @@ internal class Program
             case "3145": // Return of Devlin Stone
             case "3151": // ilClan Trial
             case "3152": // Early ilClan Era (partial)
+            case "3152x": // Early ilClan Era (fill-in-the-blanks)
                 break;
             default:
                 Console.WriteLine("Unrecognized map name");
@@ -89,7 +90,15 @@ internal class Program
 
         Console.Write("Reading data files...");
 
-        var planetRepo = new PlanetInfoRepository("../data/systems.tsv");
+        PlanetInfoRepository? planetRepo = null;
+        if (String.Equals(map, "3152x"))
+        {
+            planetRepo = new PlanetInfoRepository("../Extractor/3152x.data", true);
+        }
+        else
+        {
+            planetRepo = new PlanetInfoRepository("../data/systems.tsv");
+        }
         var factionRepo = new FactionInfoRepository("../data/factions.tsv");
 
         Console.WriteLine(" Done!");

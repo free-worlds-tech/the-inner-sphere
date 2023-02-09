@@ -25,22 +25,12 @@ internal class PlanetInfo
         AlternateNames = altNames;
     }
 
-    public PlanetInfo(uint id, string name, double x, double y, string owner, string ownershipNote)
-    {
-        Name = name;
-        AlternateNames = new List<string>();
-        Id = id;
-        Coordinates = new SystemCoordinates(x, y);
-        Owners = new SimplePlanetFactionInfo(owner, ownershipNote);
-        SarnaUrl = "";
-    }
-
     public string Name { get; }
     public IReadOnlyList<string> AlternateNames { get; }
     public uint Id { get;  }
     public SystemCoordinates Coordinates { get; }
     public string SarnaUrl { get; }
-    public IPlanetFactionInfo Owners { get; }
+    public PlanetFactionInfo Owners { get; }
 
     public string GetNameByYear(int year)
     {
