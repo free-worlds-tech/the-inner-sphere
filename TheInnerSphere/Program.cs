@@ -256,7 +256,12 @@ internal class Program
             }
         }
 
-        // plotter.Add(new Rectangle(new SystemCoordinates(-30,-30), new SystemCoordinates(30,30)));
+        // mid-3152 map rectangles
+        /*plotter.Add(new Rectangle(new SystemCoordinates(-353.152,490.786), new SystemCoordinates(-20.947,144.710)));
+        plotter.Add(new Rectangle(new SystemCoordinates(-421.047,-321.082), new SystemCoordinates(-12.415,10.294)));
+        plotter.Add(new Rectangle(new SystemCoordinates(-198.534,-394.997), new SystemCoordinates(39.275,-247.142)));
+        plotter.Add(new Rectangle(new SystemCoordinates(-48.602,11.846), new SystemCoordinates(185.100,498.766)));
+        plotter.Add(new Rectangle(new SystemCoordinates(44.199,-72.946), new SystemCoordinates(509.843,116.275)));*/
 
         var outputFile = $"output.{map}.svg";
         plotter.Write(outputFile);
