@@ -34,70 +34,16 @@ internal class Program
             }
         }
 
-        switch (map)
-        {
-            case "all":
-            case "2271": // Free Worlds League founding year (partial)
-            case "2317": // Federated Suns founding year (partial)
-            case "2319": // Draconis Combine founding year (partial)
-            case "2341": // Lyran Commonwealth founding year (partial)
-            case "2367": // Capellan Confederation founding year (partial)
-            case "2571": // Star League founding year
-            case "2596": // End of Reunification War
-            case "2750": // Beginning of the fall of the Star League
-            case "2765": // Just before the Amaris Coup
-            case "2767": // Amaris Empire
-            case "2783": // Great House annexations of the Terran Hegemony
-            case "2786": // Start of 1st Succession War
-            case "2821": // Start of Operation Klondike
-            case "2822": // End of 1st Succession War, End of Operation Klondike
-            case "2830": // Start of 2nd Succession War
-            case "2864": // End of 2nd Succession War
-            case "3025": // End of 3rd Succession War
-            case "3030": // End of 4th Succession War
-            case "3040": // End of War of 3039
-            case "3049": // Operation Revival: Periphery
-            case "3050a": // Operation Revival: Wave 1
-            case "3050b": // Operation Revival: Wave 2
-            case "3050c": // Operation Revival: Wave 3
-            case "3051": // Year of Peace
-            case "3052": // End of Operation Revival
-            case "3057": // Start of Operation Guerrero
-            case "3058": // End of Operation Guerrero
-            case "3059a": // Operation Bulldog: Wave 1
-            case "3059b": // Operation Bulldog: Wave 2
-            case "3059c": // Operation Bulldog: Wave 3
-            case "3059d": // Operation Bulldog: Wave 4
-            case "3063": // Start of Fed Com Civil War
-            case "3067": // End of Fed Com Civil War
-            case "3068": // Start of the Jihad
-            case "3075": // Middle of the Jihad
-            case "3079": // Waning years of the Jihad
-            case "3081": // End of the Jihad
-            case "3085": // End of the Wars of Reaving
-            case "3095": // Early Republic
-            case "3130": // Devlin Stone's Retirement
-            case "3135": // Fortress Republic
-            case "3145": // Return of Devlin Stone
-            case "3151": // ilClan Trial
-            case "3152": // Early ilClan Era (partial)
-            case "3152x": // Early ilClan Era (fill-in-the-blanks)
-                break;
-            default:
-                Console.WriteLine("Unrecognized map name");
-                return;
-        }
-
         Console.Write("Reading data files...");
 
         PlanetInfoRepository? planetRepo = null;
-        if (String.Equals(map, "3152x"))
+        if (String.Equals(map, "all"))
         {
-            planetRepo = new PlanetInfoRepository("../Extractor/3152x.data", true);
+            planetRepo = new PlanetInfoRepository("../data/systems.tsv");
         }
         else
         {
-            planetRepo = new PlanetInfoRepository("../data/systems.tsv");
+            planetRepo = new PlanetInfoRepository($"../extracted/{map}.data", true);
         }
         var factionRepo = new FactionInfoRepository("../data/factions.tsv");
 
@@ -309,6 +255,8 @@ internal class Program
                 plotter.Add(planet);
             }
         }
+
+        // plotter.Add(new Rectangle(new SystemCoordinates(-30,-30), new SystemCoordinates(30,30)));
 
         var outputFile = $"output.{map}.svg";
         plotter.Write(outputFile);
