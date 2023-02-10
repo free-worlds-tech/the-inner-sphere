@@ -70,7 +70,7 @@ internal class Program
             case "3059d": // Operation Bulldog: Wave 4
             case "3063": // Start of Fed Com Civil War
             case "3067": // End of Fed Com Civil War
-            case "3068": // Star of the Jihad
+            case "3068": // Start of the Jihad
             case "3075": // Middle of the Jihad
             case "3079": // Waning years of the Jihad
             case "3081": // End of the Jihad
