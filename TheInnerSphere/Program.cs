@@ -252,7 +252,11 @@ internal class Program
         plotter.Add(new Rectangle(new SystemCoordinates(-48.602,11.846), new SystemCoordinates(185.100,498.766)));
         plotter.Add(new Rectangle(new SystemCoordinates(44.199,-72.946), new SystemCoordinates(509.843,116.275)));*/
 
-        var outputFile = $"output.{map}.svg";
+        if (!Directory.Exists("../output"))
+        {
+            Directory.CreateDirectory("../output");
+        }
+        var outputFile = $"../output/{map}.svg";
         plotter.Write(outputFile);
 
         Console.WriteLine($" Saved to {outputFile}!");
