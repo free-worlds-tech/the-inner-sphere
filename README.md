@@ -9,7 +9,7 @@ dotnet run 3025
 ```
 
 ```
-dotnet run 3049 mini.json
+dotnet run 3049 mini
 ```
 
 ## Custom Settings

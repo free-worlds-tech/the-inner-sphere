@@ -8,7 +8,7 @@ internal class Program
         Console.WriteLine("The Inner Sphere!");
 
         string map = "all";
-        string settingsFile = "default.json";
+        string settingsName = "default";
         if (args.Length == 1)
         {
             map = args[0].ToLower();
@@ -16,7 +16,7 @@ internal class Program
         else if (args.Length == 2)
         {
             map = args[0].ToLower();
-            settingsFile = args[1];
+            settingsName = args[1];
         }
         else if (args.Length > 2)
         {
@@ -24,6 +24,7 @@ internal class Program
             return;
         }
 
+        string settingsFile = $"settings/{settingsName}.json";
         ProgramSettings settings = new ProgramSettings();
         using (var stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read))
         {
@@ -256,7 +257,7 @@ internal class Program
         {
             Directory.CreateDirectory("../output");
         }
-        var outputFile = $"../output/{map}.svg";
+        var outputFile = $"../output/{map}.{settingsName}.svg";
         plotter.Write(outputFile);
 
         Console.WriteLine($" Saved to {outputFile}!");
