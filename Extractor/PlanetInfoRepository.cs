@@ -4,11 +4,15 @@ internal class PlanetInfoRepository
     {
         _planets = new Dictionary<uint, PlanetInfo>();
         ParseDataFile(file);
+
+        var ids = _planets.Keys.ToArray();
+        Array.Sort(ids);
+        _sortedIds = ids;
     }
 
     public IEnumerable<uint> GetPlanetIds()
     {
-        return _planets.Keys;
+        return _sortedIds;
     }
 
     public PlanetInfo GetPlanetInfo(uint id)
@@ -49,5 +53,6 @@ internal class PlanetInfoRepository
     }
 
     private Dictionary<uint, PlanetInfo> _planets;
+    private IEnumerable<uint> _sortedIds;
     
 }

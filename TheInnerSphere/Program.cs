@@ -36,15 +36,7 @@ internal class Program
 
         Console.Write("Reading data files...");
 
-        PlanetInfoRepository? planetRepo = null;
-        if (String.Equals(map, "all"))
-        {
-            planetRepo = new PlanetInfoRepository("../data/systems.tsv");
-        }
-        else
-        {
-            planetRepo = new PlanetInfoRepository($"../extracted/{map}.data", true);
-        }
+        var planetRepo = new PlanetInfoRepository($"../extracted/{map}.table.md");
         var factionRepo = new FactionInfoRepository("../data/factions.tsv");
 
         Console.WriteLine(" Done!");
@@ -72,10 +64,15 @@ internal class Program
 
         
         SystemColorMapping? systemPalette = null;
-        if (map != "all" && String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             systemPalette = (PlanetInfo system) => {
-                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                var owner = system.Owners.GetOwner();
+                if (String.Equals("?", owner))
+                {
+                    return "#ffffff";
+                }
+                var faction = factionRepo.GetFactionInfo(owner);
                 return faction.Color;
             };
         }
@@ -94,13 +91,13 @@ internal class Program
         }
 
         LinkColorMapping? linkPalette = null;
-        if (map != "all" && String.Equals(settings.LinkColors, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.LinkColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             linkPalette = (PlanetInfo system1, PlanetInfo system2) => {
-                var owner1 = system1.Owners.GetOwner(map);
-                var owner2 = system2.Owners.GetOwner(map);
+                var owner1 = system1.Owners.GetOwner();
+                var owner2 = system2.Owners.GetOwner();
 
-                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1) && !String.Equals("A", owner1))
+                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1) && !String.Equals("A", owner1) && !String.Equals("?", owner1))
                 {
                     return factionRepo.GetFactionInfo(owner1).Color;
                 }
@@ -158,29 +155,21 @@ internal class Program
         }
 
         SystemSubtitleMapping? subtitleMapping = null;
-        if (map != "all" && String.Equals(settings.SystemSubtitles, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.SystemSubtitles, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             subtitleMapping = (PlanetInfo system) => {
-                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                var owner = system.Owners.GetOwner();
+                if (String.Equals(owner, "?"))
+                {
+                    return "UNKNOWN";
+                }
+                var faction = factionRepo.GetFactionInfo(owner);
                 return faction.Name.ToUpper();
             };
         }
         else if (String.Equals(settings.SystemSubtitles, "none", StringComparison.InvariantCultureIgnoreCase))
         {
             subtitleMapping = null;
-        }
-        else if (String.Equals(settings.SystemSubtitles, "alt-names", StringComparison.InvariantCultureIgnoreCase))
-        {
-            subtitleMapping = (PlanetInfo system) => {
-                if (system.AlternateNames.Count > 0)
-                {
-                    return String.Join(", ", system.AlternateNames);
-                }
-                else
-                {
-                    return "";
-                }
-            };
         }
         else
         {
@@ -189,7 +178,7 @@ internal class Program
         }
 
         ImportantWorldMapping importantWorldMapping = (PlanetInfo system) => {
-            var note = system.Owners.GetOwnershipNote(map);
+            var note = system.Owners.GetOwnershipNote();
             if (note.ToLower().Contains("faction capital"))
             {
                 return true;
@@ -233,7 +222,7 @@ internal class Program
             }
             else
             {
-                var faction = factionRepo.GetFactionInfo(planet.Owners.GetOwner(map));
+                var faction = factionRepo.GetFactionInfo(planet.Owners.GetOwner());
                 
                 plotPlanet = true;
                 if (!settings.IncludeAbandonedSystems && faction.Id == "A")
@@ -244,7 +233,7 @@ internal class Program
                 {
                     plotPlanet = false;
                 }
-                if (!settings.IncludeSystemsWithUnknownStatus && faction.Id == "")
+                if (!settings.IncludeSystemsWithUnknownStatus && (faction.Id == "" || faction.Id == "?"))
                 {
                     plotPlanet = false;
                 }

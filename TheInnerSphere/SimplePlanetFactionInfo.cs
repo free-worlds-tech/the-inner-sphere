@@ -6,12 +6,12 @@ internal class SimplePlanetFactionInfo : IPlanetFactionInfo
         _ownershipNote = ownershipNote;
     }
 
-    public string GetOwner(string map)
+    public string GetOwner()
     {
         return _owner;
     }
 
-    public string GetOwnershipNote(string map)
+    public string GetOwnershipNote()
     {
         return _ownershipNote;
     }

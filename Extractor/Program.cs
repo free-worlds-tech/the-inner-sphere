@@ -13,6 +13,7 @@ internal class Program
 
         Console.WriteLine(" Done!");
 
+        Extract(planetRepo, 0, "all", new string[] {});
         Extract(planetRepo, 2271);
         Extract(planetRepo, 2317);
         Extract(planetRepo, 2319);
@@ -58,7 +59,9 @@ internal class Program
         Extract(planetRepo, 3151);
         Extract(planetRepo, 3152);
 
-        // Extract(planetRepo, 3152, "3152x", new string[] {"3152", "3151"});
+        Extract(planetRepo, 3152, "3152x", new string[] {"3152", "3151"});
+        ExtractEarliestOwner(planetRepo, "first-faction");
+        
     }
 
     private static void Extract(PlanetInfoRepository planetRepo, int year)
@@ -75,8 +78,11 @@ internal class Program
     {
         var ids = planetRepo.GetPlanetIds();
 
-        using (var writer = new StreamWriter($"../extracted/{filename}.data"))
+        using (var writer = new StreamWriter($"../extracted/{filename}.table.md"))
         {
+            writer.WriteLine($"ID | Name | X | Y | Faction | Notes");
+            writer.WriteLine($"---: | :--- | :---: | :---: | :---: | :---");
+
             foreach(var id in ids)
             {
                 var info = planetRepo.GetPlanetInfo(id);
@@ -94,10 +100,91 @@ internal class Program
                         ownerNote = info.Owners.GetOwnershipNote(mapNames[i]);
                         break;
                     }
-
                 }
 
-                writer.WriteLine($"{id}|{name}|{x}|{y}|{owner}|{ownerNote}");
+                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {ownerNote}");
+            }
+        }
+    }
+
+    private static void ExtractEarliestOwner(PlanetInfoRepository planetRepo, string filename)
+    {
+        var ids = planetRepo.GetPlanetIds();
+
+        using (var writer = new StreamWriter($"../extracted/{filename}.table.md"))
+        {
+            writer.WriteLine($"ID | Name | X | Y | Faction | Notes");
+            writer.WriteLine($"---: | :--- | :---: | :---: | :---: | :---");
+
+            foreach(var id in ids)
+            {
+                var info = planetRepo.GetPlanetInfo(id);
+                var name = info.Name;
+                var x = info.Coordinates.X;
+                var y = info.Coordinates.Y;
+                var owner = "I";
+                var ownerNote = "";
+
+                var maps = new string[] {
+                    "2271",
+                    "2317",
+                    "2319",
+                    "2341",
+                    "2367",
+                    "2571",
+                    "2596",
+                    "2750",
+                    "2765",
+                    "2767",
+                    "2783",
+                    "2786",
+                    "2821",
+                    "2822",
+                    "2830",
+                    "2864",
+                    "3025",
+                    "3030",
+                    "3040",
+                    "3049",
+                    "3050a",
+                    "3050b",
+                    "3050c",
+                    "3051",
+                    "3052",
+                    "3057",
+                    "3058",
+                    "3059a",
+                    "3059b",
+                    "3059c",
+                    "3059d",
+                    "3063",
+                    "3067",
+                    "3068",
+                    "3075",
+                    "3079",
+                    "3081",
+                    "3085",
+                    "3095",
+                    "3130",
+                    "3135",
+                    "3145",
+                    "3151",
+                    "3152"
+                };
+
+                for (int i = 0; i < maps.Length; i++)
+                {
+                    var possibleOwner = info.Owners.GetOwner(maps[i]);
+                    if (!String.IsNullOrEmpty(possibleOwner) 
+                        && !String.Equals("U", possibleOwner)
+                        && !String.Equals("I", possibleOwner))
+                    {
+                        owner = possibleOwner;
+                        break;
+                    }
+                }
+
+                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {ownerNote}");
             }
         }
     }
