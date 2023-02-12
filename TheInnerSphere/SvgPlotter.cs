@@ -90,8 +90,11 @@ internal class SvgPlotter
                 if (_subtitleMapping != null)
                 {
                     string subtitle = _subtitleMapping(system);
-                    string subtitleElement = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + 2)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{subFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{subtitle}</text>";
-                    _text.Add(subtitleElement);
+                    if (!String.IsNullOrWhiteSpace(subtitle))
+                    {
+                        string subtitleElement = $"<text x=\"{transformedX}\" y=\"{transformedY - (radius + 2)}\" fill=\"#eeeeee\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"{subFontSize}\" stroke=\"black\" stroke-width=\"0.25\">{subtitle}</text>";
+                        _text.Add(subtitleElement);
+                    }
                 }
                 
             }
