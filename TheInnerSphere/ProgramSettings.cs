@@ -20,7 +20,7 @@ internal class ProgramSettings
 
     public string? SystemTitles { get; set; } // none, name, static-name
     public int TitleFontSize { get; set; }
-    public string? SystemSubtitles { get; set; } // none, faction, alt-names
+    public string? SystemSubtitles { get; set; } // none, faction
     public int SubtitleFontSize { get; set; }
     public int SystemRadius { get; set; }
 

@@ -8,7 +8,8 @@ internal class Program
         Console.WriteLine("The Inner Sphere!");
 
         string map = "all";
-        string settingsFile = "default.json";
+        string settingsName = "default";
+        string? overlaysName = null;
         if (args.Length == 1)
         {
             map = args[0].ToLower();
@@ -16,14 +17,21 @@ internal class Program
         else if (args.Length == 2)
         {
             map = args[0].ToLower();
-            settingsFile = args[1];
+            settingsName = args[1];
         }
-        else if (args.Length > 2)
+        else if (args.Length == 3)
+        {
+            map = args[0].ToLower();
+            settingsName = args[1];
+            overlaysName = args[2];
+        }
+        else if (args.Length > 3)
         {
             Console.WriteLine("Unexpected number of arguments");
             return;
         }
 
+        string settingsFile = $"settings/{settingsName}.json";
         ProgramSettings settings = new ProgramSettings();
         using (var stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read))
         {
@@ -34,62 +42,24 @@ internal class Program
             }
         }
 
-        switch (map)
+        Overlays overlays = new Overlays();
+        if (!String.IsNullOrEmpty(overlaysName))
         {
-            case "all":
-            case "2271": // Free Worlds League founding year (partial)
-            case "2317": // Federated Suns founding year (partial)
-            case "2319": // Draconis Combine founding year (partial)
-            case "2341": // Lyran Commonwealth founding year (partial)
-            case "2367": // Capellan Confederation founding year (partial)
-            case "2571": // Star League founding year
-            case "2596": // End of Reunification War
-            case "2750": // Beginning of the fall of the Star League
-            case "2765": // Just before the Amaris Coup
-            case "2767": // Amaris Empire
-            case "2783": // Great House annexations of the Terran Hegemony
-            case "2786": // Start of 1st Succession War
-            case "2821": // Start of Operation Klondike
-            case "2822": // End of 1st Succession War, End of Operation Klondike
-            case "2830": // Start of 2nd Succession War
-            case "2864": // End of 2nd Succession War
-            case "3025": // End of 3rd Succession War
-            case "3030": // End of 4th Succession War
-            case "3040": // End of War of 3039
-            case "3049": // Operation Revival: Periphery
-            case "3050a": // Operation Revival: Wave 1
-            case "3050b": // Operation Revival: Wave 2
-            case "3050c": // Operation Revival: Wave 3
-            case "3051": // Year of Peace
-            case "3052": // End of Operation Revival
-            case "3057": // Start of Operation Guerrero
-            case "3058": // End of Operation Guerrero
-            case "3059a": // Operation Bulldog: Wave 1
-            case "3059b": // Operation Bulldog: Wave 2
-            case "3059c": // Operation Bulldog: Wave 3
-            case "3059d": // Operation Bulldog: Wave 4
-            case "3063": // Start of Fed Com Civil War
-            case "3067": // End of Fed Com Civil War
-            case "3068": // Star of the Jihad
-            case "3075": // Middle of the Jihad
-            case "3079": // Waning years of the Jihad
-            case "3081": // End of the Jihad
-            case "3085": // End of the Wars of Reaving
-            case "3095": // Early Republic
-            case "3130": // Devlin Stone's Retirement
-            case "3135": // Fortress Republic
-            case "3145": // Return of Devlin Stone
-            case "3151": // ilClan Trial
-            case "3152": // Early ilClan Era (partial)
-                break;
-            default:
-                Console.WriteLine("Unrecognized map name");
-                return;
+            string overlaysFile = $"../overlays/{overlaysName}.json";
+            
+            using (var stream = new FileStream(overlaysFile, FileMode.Open, FileAccess.Read))
+            {
+                Overlays? deserialized = JsonSerializer.Deserialize<Overlays>(stream);
+                if (deserialized != null)
+                {
+                    overlays = deserialized;
+                }
+            }
         }
 
         Console.Write("Reading data files...");
 
-        var planetRepo = new PlanetInfoRepository("../data/systems.tsv");
+        var planetRepo = new PlanetInfoRepository($"../extracted/{map}.table.md");
         var factionRepo = new FactionInfoRepository("../data/factions.tsv");
 
         Console.WriteLine(" Done!");
@@ -117,10 +87,15 @@ internal class Program
 
         
         SystemColorMapping? systemPalette = null;
-        if (map != "all" && String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             systemPalette = (PlanetInfo system) => {
-                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                var owner = system.Owners.GetOwner();
+                if (String.Equals("?", owner))
+                {
+                    return "#ffffff";
+                }
+                var faction = factionRepo.GetFactionInfo(owner);
                 return faction.Color;
             };
         }
@@ -139,13 +114,13 @@ internal class Program
         }
 
         LinkColorMapping? linkPalette = null;
-        if (map != "all" && String.Equals(settings.LinkColors, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.LinkColors, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             linkPalette = (PlanetInfo system1, PlanetInfo system2) => {
-                var owner1 = system1.Owners.GetOwner(map);
-                var owner2 = system2.Owners.GetOwner(map);
+                var owner1 = system1.Owners.GetOwner();
+                var owner2 = system2.Owners.GetOwner();
 
-                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1) && !String.Equals("A", owner1))
+                if (String.Equals(owner1, owner2) && !String.Equals("I", owner1) && !String.Equals("A", owner1) && !String.Equals("?", owner1))
                 {
                     return factionRepo.GetFactionInfo(owner1).Color;
                 }
@@ -203,29 +178,21 @@ internal class Program
         }
 
         SystemSubtitleMapping? subtitleMapping = null;
-        if (map != "all" && String.Equals(settings.SystemSubtitles, "faction", StringComparison.InvariantCultureIgnoreCase))
+        if (String.Equals(settings.SystemSubtitles, "faction", StringComparison.InvariantCultureIgnoreCase))
         {
             subtitleMapping = (PlanetInfo system) => {
-                var faction = factionRepo.GetFactionInfo(system.Owners.GetOwner(map));
+                var owner = system.Owners.GetOwner();
+                if (String.Equals(owner, "?"))
+                {
+                    return "UNKNOWN";
+                }
+                var faction = factionRepo.GetFactionInfo(owner);
                 return faction.Name.ToUpper();
             };
         }
         else if (String.Equals(settings.SystemSubtitles, "none", StringComparison.InvariantCultureIgnoreCase))
         {
             subtitleMapping = null;
-        }
-        else if (String.Equals(settings.SystemSubtitles, "alt-names", StringComparison.InvariantCultureIgnoreCase))
-        {
-            subtitleMapping = (PlanetInfo system) => {
-                if (system.AlternateNames.Count > 0)
-                {
-                    return String.Join(", ", system.AlternateNames);
-                }
-                else
-                {
-                    return "";
-                }
-            };
         }
         else
         {
@@ -234,7 +201,7 @@ internal class Program
         }
 
         ImportantWorldMapping importantWorldMapping = (PlanetInfo system) => {
-            var note = system.Owners.GetOwnershipNote(map);
+            var note = system.Owners.GetOwnershipNote();
             if (note.ToLower().Contains("faction capital"))
             {
                 return true;
@@ -278,7 +245,7 @@ internal class Program
             }
             else
             {
-                var faction = factionRepo.GetFactionInfo(planet.Owners.GetOwner(map));
+                var faction = factionRepo.GetFactionInfo(planet.Owners.GetOwner());
                 
                 plotPlanet = true;
                 if (!settings.IncludeAbandonedSystems && faction.Id == "A")
@@ -289,7 +256,7 @@ internal class Program
                 {
                     plotPlanet = false;
                 }
-                if (!settings.IncludeSystemsWithUnknownStatus && faction.Id == "")
+                if (!settings.IncludeSystemsWithUnknownStatus && (faction.Id == "" || faction.Id == "?"))
                 {
                     plotPlanet = false;
                 }
@@ -301,7 +268,20 @@ internal class Program
             }
         }
 
-        var outputFile = $"output.{map}.svg";
+        foreach (var rect in overlays.Rectangles)
+        {
+            plotter.Add(rect);
+        }
+
+        if (!Directory.Exists("../output"))
+        {
+            Directory.CreateDirectory("../output");
+        }
+        var outputFile = $"../output/{map}.{settingsName}.svg";
+        if (!String.IsNullOrEmpty(overlaysName))
+        {
+            outputFile = $"../output/{map}.{settingsName}.{overlaysName}.svg";
+        }
         plotter.Write(outputFile);
 
         Console.WriteLine($" Saved to {outputFile}!");

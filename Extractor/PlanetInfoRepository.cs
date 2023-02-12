@@ -1,11 +1,9 @@
-using System.Linq;
-
 internal class PlanetInfoRepository
 {
     public PlanetInfoRepository(string file)
     {
         _planets = new Dictionary<uint, PlanetInfo>();
-        ParseSimpleDataFile(file);
+        ParseDataFile(file);
 
         var ids = _planets.Keys.ToArray();
         Array.Sort(ids);
@@ -35,30 +33,19 @@ internal class PlanetInfoRepository
         return new List<PlanetInfo>(matches);
     }
 
-    private void ParseSimpleDataFile(string file)
+    private void ParseDataFile(string file)
     {
         using (var reader = new StreamReader(file))
         {
-            // Ignore two header lines
-            reader.ReadLine();
-            reader.ReadLine();
-
+            // Ignore header line
             var line = reader.ReadLine();
+
+            line = reader.ReadLine();
             while (line != null)
             {
-                var entries = line.Split('|', StringSplitOptions.TrimEntries);
+                var entries = line.Split('\t', StringSplitOptions.TrimEntries);
 
-                _planets.Add(
-                    UInt32.Parse(entries[0]), 
-                    new PlanetInfo(
-                        UInt32.Parse(entries[0]),
-                        entries[1],
-                        Double.Parse(entries[2]),
-                        Double.Parse(entries[3]),
-                        entries[4],
-                        entries[5]
-                    )
-                );
+                _planets.Add(UInt32.Parse(entries[0]), new PlanetInfo(entries));
 
                 line = reader.ReadLine();
             }

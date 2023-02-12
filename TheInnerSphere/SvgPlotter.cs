@@ -6,6 +6,7 @@ internal class SvgPlotter
         _lines = new List<string>();
         _text = new List<string>();
         _systems = new List<PlanetInfo>();
+        _rectangles = new List<string>();
 
         _scale = settings.Scale;
 
@@ -33,6 +34,22 @@ internal class SvgPlotter
 
         _primaryFontSize = settings.PrimaryFontSize;
         _secondaryFontSize = settings.SecondaryFontSize;
+    }
+
+    public void Add(Rectangle rectangle)
+    {
+        (double transformedX1, double transformedY1) = TransformCoordinates(rectangle.PointA);
+        (double transformedX2, double transformedY2) = TransformCoordinates(rectangle.PointB);
+
+        double x = Math.Min(transformedX1, transformedX2);
+        double y = Math.Min(transformedY1, transformedY2);
+
+        double width = Math.Abs(transformedX2 - transformedX1);
+        double height = Math.Abs(transformedY2 - transformedY1);
+
+        string svg = $"<rect x=\"{x}\" y=\"{y}\" width=\"{width}\" height=\"{height}\" fill-opacity=\"0\" stroke=\"#cccccc\" />";
+
+        _rectangles.Add(svg);
     }
 
     public void Add(PlanetInfo system)
@@ -106,6 +123,10 @@ internal class SvgPlotter
             {
                 writer.WriteLine($"  {circle}");
             }
+            foreach (var rectangle in _rectangles)
+            {
+                writer.WriteLine($"  {rectangle}");
+            }
             foreach (var text in _text)
             {
                 writer.WriteLine($"  {text}");
@@ -158,6 +179,7 @@ internal class SvgPlotter
     private List<string> _circles;
     private List<string> _lines;
     private List<string> _text;
+    private List<string> _rectangles;
     private int _width;
     private int _height;
     private double _centerX;

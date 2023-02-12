@@ -13,7 +13,7 @@ internal class FactionInfoRepository
 
     public FactionInfo GetFactionInfo(string id)
     {
-        if (String.IsNullOrEmpty(id))
+        if (String.IsNullOrEmpty(id) || String.Equals(id, "?"))
         {
             return new FactionInfo("", "Undefined", "#000000");
         }
