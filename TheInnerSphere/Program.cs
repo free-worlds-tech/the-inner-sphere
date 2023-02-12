@@ -59,8 +59,8 @@ internal class Program
 
         Console.Write("Reading data files...");
 
-        var planetRepo = new PlanetInfoRepository($"../extracted/{map}.table.md");
-        var factionRepo = new FactionInfoRepository("../data/factions.tsv");
+        var planetRepo = new PlanetInfoRepository($"../system-data/{map}.table.md");
+        var factionRepo = new FactionInfoRepository("../sarna-data/factions.tsv");
 
         Console.WriteLine(" Done!");
 

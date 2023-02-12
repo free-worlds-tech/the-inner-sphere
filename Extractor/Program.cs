@@ -9,7 +9,9 @@ internal class Program
 
         Console.Write("Reading data files...");
 
-        var planetRepo = new PlanetInfoRepository("../data/systems.tsv");
+        var planetRepo = new PlanetInfoRepository("../sarna-data/systems.tsv");
+
+        var factionRepo = new FactionInfoRepository("../sarna-data/factions.tsv");
 
         Console.WriteLine(" Done!");
 
@@ -61,6 +63,8 @@ internal class Program
 
         Extract(planetRepo, 3152, "3152x", new string[] {"3152", "3151"});
         ExtractEarliestOwner(planetRepo, "first-faction");
+
+        ExtractFactionData(factionRepo, "factions");
         
     }
 
@@ -78,7 +82,7 @@ internal class Program
     {
         var ids = planetRepo.GetPlanetIds();
 
-        using (var writer = new StreamWriter($"../extracted/{filename}.table.md"))
+        using (var writer = new StreamWriter($"../system-data/{filename}.table.md"))
         {
             writer.WriteLine($"ID | Name | X | Y | Faction | Notes");
             writer.WriteLine($"---: | :--- | :---: | :---: | :---: | :---");
@@ -111,7 +115,7 @@ internal class Program
     {
         var ids = planetRepo.GetPlanetIds();
 
-        using (var writer = new StreamWriter($"../extracted/{filename}.table.md"))
+        using (var writer = new StreamWriter($"../system-data/{filename}.table.md"))
         {
             writer.WriteLine($"ID | Name | X | Y | Faction | Notes");
             writer.WriteLine($"---: | :--- | :---: | :---: | :---: | :---");
@@ -185,6 +189,26 @@ internal class Program
                 }
 
                 writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {ownerNote}");
+            }
+        }
+    }
+
+    private static void ExtractFactionData(FactionInfoRepository factions, string filename)
+    {
+        var ids = factions.GetFactionIds();
+
+        using (var writer = new StreamWriter($"../faction-data/{filename}.table.md"))
+        {
+            writer.WriteLine($"ID | Name | Color");
+            writer.WriteLine($":---: | :--- | :---:");
+
+            foreach (var id in ids)
+            {
+                var info = factions.GetFactionInfo(id);
+                var name = info.Name;
+                var color = info.Color;
+
+                writer.WriteLine($"{id} | {name} | {color}");
             }
         }
     }

@@ -1,6 +1,6 @@
 # The Inner Sphere
 
-This repo has a simple map plotter for BattleTech. It is written in C# using .Net 6. The console app requires a single parameter that is which map to generate. The map names are the files in the `./extracted/` directory such as `3025`, `3151`, or `all`. If you want to use alternate settings for map generation, a second parameter can be passed with the path to a settings json file. A third argument can provide an overlays json file to add elements, such as rectangles, to the generated map.
+This repo has a simple map plotter for BattleTech. It is written in C# using .Net 6. The console app requires a single parameter that is which map to generate. The map names are the files in the `./system-data/` directory such as `3025`, `3151`, or `all`. If you want to use alternate settings for map generation, a second parameter can be passed with the path to a settings json file. A third argument can provide an overlays json file to add elements, such as rectangles, to the generated map.
 
 ## Examples
 
@@ -27,4 +27,4 @@ Program settings are contained in a json file that can specify various propertie
 
 # Extractor
 
-This helper app extracts map data from the data files in `./data/` to markdown table files in `./extracted/`. Those markdown tables are then used by the map generator.
+This helper app extracts map data from the data files in `./data/` to markdown table files in `./systam-data/` and `./faction-data/`. Those markdown tables are then used by the map generator.
