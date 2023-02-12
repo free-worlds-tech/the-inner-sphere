@@ -6,6 +6,6 @@ internal class SystemCoordinates
         Y = y;
     }
 
-    public double X { get; }
-    public double Y { get; }
+    public double X { get; set; }
+    public double Y { get; set; }
 }

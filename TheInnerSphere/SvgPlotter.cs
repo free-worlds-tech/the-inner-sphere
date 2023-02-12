@@ -38,8 +38,8 @@ internal class SvgPlotter
 
     public void Add(Rectangle rectangle)
     {
-        (double transformedX1, double transformedY1) = TransformCoordinates(rectangle.A);
-        (double transformedX2, double transformedY2) = TransformCoordinates(rectangle.B);
+        (double transformedX1, double transformedY1) = TransformCoordinates(rectangle.PointA);
+        (double transformedX2, double transformedY2) = TransformCoordinates(rectangle.PointB);
 
         double x = Math.Min(transformedX1, transformedX2);
         double y = Math.Min(transformedY1, transformedY2);

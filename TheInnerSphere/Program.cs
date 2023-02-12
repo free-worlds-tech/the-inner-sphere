@@ -9,6 +9,7 @@ internal class Program
 
         string map = "all";
         string settingsName = "default";
+        string? overlaysName = null;
         if (args.Length == 1)
         {
             map = args[0].ToLower();
@@ -18,7 +19,13 @@ internal class Program
             map = args[0].ToLower();
             settingsName = args[1];
         }
-        else if (args.Length > 2)
+        else if (args.Length == 3)
+        {
+            map = args[0].ToLower();
+            settingsName = args[1];
+            overlaysName = args[2];
+        }
+        else if (args.Length > 3)
         {
             Console.WriteLine("Unexpected number of arguments");
             return;
@@ -32,6 +39,21 @@ internal class Program
             if (deserialized != null)
             {
                 settings = deserialized;
+            }
+        }
+
+        Overlays overlays = new Overlays();
+        if (!String.IsNullOrEmpty(overlaysName))
+        {
+            string overlaysFile = $"../overlays/{overlaysName}.json";
+            
+            using (var stream = new FileStream(overlaysFile, FileMode.Open, FileAccess.Read))
+            {
+                Overlays? deserialized = JsonSerializer.Deserialize<Overlays>(stream);
+                if (deserialized != null)
+                {
+                    overlays = deserialized;
+                }
             }
         }
 
@@ -246,18 +268,20 @@ internal class Program
             }
         }
 
-        // mid-3152 map rectangles
-        /*plotter.Add(new Rectangle(new SystemCoordinates(-353.152,490.786), new SystemCoordinates(-20.947,144.710)));
-        plotter.Add(new Rectangle(new SystemCoordinates(-421.047,-321.082), new SystemCoordinates(-12.415,10.294)));
-        plotter.Add(new Rectangle(new SystemCoordinates(-198.534,-394.997), new SystemCoordinates(39.275,-247.142)));
-        plotter.Add(new Rectangle(new SystemCoordinates(-48.602,11.846), new SystemCoordinates(185.100,498.766)));
-        plotter.Add(new Rectangle(new SystemCoordinates(44.199,-72.946), new SystemCoordinates(509.843,116.275)));*/
+        foreach (var rect in overlays.Rectangles)
+        {
+            plotter.Add(rect);
+        }
 
         if (!Directory.Exists("../output"))
         {
             Directory.CreateDirectory("../output");
         }
         var outputFile = $"../output/{map}.{settingsName}.svg";
+        if (!String.IsNullOrEmpty(overlaysName))
+        {
+            outputFile = $"../output/{map}.{settingsName}.{overlaysName}.svg";
+        }
         plotter.Write(outputFile);
 
         Console.WriteLine($" Saved to {outputFile}!");

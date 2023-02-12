@@ -1,11 +1,17 @@
 internal class Rectangle
 {
-    public Rectangle(SystemCoordinates a, SystemCoordinates b)
+    public Rectangle()
     {
-        A = a;
-        B = b;
+        PointA = new SystemCoordinates(0,0);
+        PointB = new SystemCoordinates(0,0);
     }
 
-    public SystemCoordinates A { get; }
-    public SystemCoordinates B { get; }
+    public Rectangle(SystemCoordinates a, SystemCoordinates b)
+    {
+        PointA = a;
+        PointB = b;
+    }
+
+    public SystemCoordinates PointA { get; set; }
+    public SystemCoordinates PointB { get; set; }
 }
