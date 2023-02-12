@@ -6,6 +6,7 @@ CC | Capellan Confederation | #238441
 CDP | Calderon Protectorate | #C3B59B
 CHH | Clan Hell's Horses | #F9A61A
 CI | Chainelane Isles | #C3B59B
+CP | Clan Protectorate | #BD5968
 CJF | Clan Jade Falcon | #ACD376
 CSF | Clan Sea Fox | #8690A3
 D | Disputed | #404040
