@@ -61,7 +61,15 @@ internal class PlanetFactionInfo
             var paren = ownerString.IndexOf('(');
             if (paren >= 0)
             {
-                return ownerString.Substring(0, paren);
+                var closeParen = _owners[map].IndexOf(')');
+                if (closeParen >= paren)
+                {
+                    return _owners[map].Substring(0, closeParen + 1);
+                }
+                else
+                {
+                    return ownerString;
+                }
             }
             else
             {
@@ -72,6 +80,17 @@ internal class PlanetFactionInfo
         {
             return "Undefined";
         }
+    }
+
+    public string GetSimpleOwner(string map)
+    {
+        var owner = GetOwner(map);
+        var paren = owner.IndexOf('(');
+        if (paren >= 0)
+        {
+            return owner.Substring(0, paren);
+        }
+        return owner;
     }
 
     public string GetOwnershipNote(string map)

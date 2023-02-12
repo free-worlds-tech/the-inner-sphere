@@ -6,11 +6,6 @@ internal class FactionInfoRepository
         ParseDataFile(file);
     }
 
-    public IEnumerable<string> GetFactionIds()
-    {
-        return _factions.Keys;
-    }
-
     public FactionInfo GetFactionInfo(string id)
     {
         if (_factions.ContainsKey(id))
@@ -32,7 +27,7 @@ internal class FactionInfoRepository
             reader.ReadLine();
 
             var line = reader.ReadLine();
-            while (line != null)
+            while (!String.IsNullOrWhiteSpace(line))
             {
                 var entries = line.Split('|', StringSplitOptions.TrimEntries);
 

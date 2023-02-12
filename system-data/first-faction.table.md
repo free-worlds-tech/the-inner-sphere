@@ -65,7 +65,7 @@ ID | Name | X | Y | Faction | Notes
 63 | Alekseyevka | -403.504 | 183.741 | LC | 
 64 | Alexandria | 110.827 | -356.104 | CCom | 
 65 | Alexandria | -57.639 | 115.993 | FoS | 
-66 | Alfirk | 588.602 | 454.172 | I | 
+66 | Alfirk | 588.602 | 454.172 | I | I(H)
 67 | Algate | 323.626 | 378.128 | DC | 
 68 | Algedi | 66.07 | 94.935 | DC | 
 69 | Algol | 64.875 | -67.773 | TGU | 
@@ -1571,7 +1571,7 @@ ID | Name | X | Y | Faction | Notes
 1569 | Malacca | -493.8 | 150.938 | RW | 
 1570 | Maladar | 108.822 | -247.735 | SIMA | 
 1571 | Malaga | -489.668 | 305.298 | RW | 
-1572 | Malagrotta | 428.053 | -271.226 | D | 
+1572 | Malagrotta | 428.053 | -271.226 | D | D(FS,TC)
 1573 | Malazan | -282.661 | -43.906 | FWL | 
 1574 | Maldive | 138.074 | -364.572 | CC | 
 1575 | Maldonado | 212.22 | 320.996 | DC | 
@@ -1958,7 +1958,7 @@ ID | Name | X | Y | Faction | Notes
 1956 | Otho | 78.418 | 176.289 | DC | 
 1957 | Otisberg | -486.472 | 125.07 | RW | 
 1958 | Ottumwa | 398.587 | 33.295 | FS | 
-1959 | Ouagadougou | 217.462 | 413.615 | D | 
+1959 | Ouagadougou | 217.462 | 413.615 | D | D(DC,I)
 1960 | Ourem | 658.885 | 293.361 | OA | 
 1961 | Outer Volta | 155.338 | 317.926 | DC | 
 1962 | Outpost | 15.246 | 426.466 | DC | 
@@ -2854,7 +2854,7 @@ ID | Name | X | Y | Faction | Notes
 2852 | Zwenkau | -233.718 | 9.774 | LC | 
 2853 | Zwipadze | -338.394 | 262.582 | LC | 
 2854 | EC821-387D | -204.816 | 1732.826 | A | 
-2855 | Fasa | -144.186 | 1625.626 | A | 
+2855 | Fasa | -144.186 | 1625.626 | I | I(H)
 2856 | Addhara | -443.661 | -293.417 | MH | 
 2857 | Algenib | -438.602 | -379.179 | MH | 
 2858 | Alphard | -406.23 | -298.444 | MH | 
@@ -2918,7 +2918,7 @@ ID | Name | X | Y | Faction | Notes
 2916 | Oscar | 548.604 | -451.75 | TC | 
 2917 | Placida | -117.687 | 490.786 | OC | 
 2918 | Porthos | 90.209 | 475.924 | EF | 
-2919 | Regis Roost | 153.512 | -442.234 | TC | 
+2919 | Regis Roost | 153.512 | -442.234 | I | I(H)
 2920 | Rezak's Hole | 418.427 | 339.173 | I | 
 2921 | Santander | 77.8 | 481.099 | CSJ | 
 2922 | Siendou | -113.99 | -291.702 | FWL | 
@@ -2933,12 +2933,12 @@ ID | Name | X | Y | Faction | Notes
 2931 | Circe | -122.574 | 1614.831 | SLIE | 
 2932 | Dagda | -132.266 | 1603.856 | SLIE | 
 2933 | Eden | -133.451 | 1613.747 | SLIE | 
-2934 | Radulov | -57.373 | 1603.16 | C | 
+2934 | Radulov | -57.373 | 1603.16 | I | I(H)
 2935 | Atreus | 71.811 | 1734.247 | C | 
 2936 | Barcella | -23.703 | 1896.374 | CNC | 
 2937 | Bearclaw | 149.39 | 1723.536 | C | 
 2938 | Brim | -24.525 | 1768.565 | C | 
-2939 | Colleen | -146.566 | 1837.816 | CBS | 
+2939 | Colleen | -146.566 | 1837.816 | CBS | CBS(H)
 2940 | Delios | -16.762 | 1804.928 | C | 
 2941 | Foster | 44.164 | 1733.181 | CBS | 
 2942 | Gatekeeper | -22.586 | 1779.374 | C | 
@@ -3058,7 +3058,7 @@ ID | Name | X | Y | Faction | Notes
 3056 | Landrum | -1127.445 | -574.129 | I | 
 3057 | Malador Cluster | -1045.933 | -381.236 | I | 
 3058 | Refuel Base Gamma | -1098.46 | -238.28 | IE | 
-3059 | Rim Worlds Republic Outpost #27 | -753.184 | 444.833 | RW | 
+3059 | Rim Worlds Republic Outpost #27 | -753.184 | 444.833 | RW | RW(H)
 3060 | St. Andreas | -582.627 | -365.812 | I | 
 3061 | Star Cluster 814 | -1022.697 | -449.467 | I | 
 3062 | Tansalir | -1550.813 | -513.952 | I | 
@@ -3109,7 +3109,7 @@ ID | Name | X | Y | Faction | Notes
 3107 | Chaffee | 275.835 | -1758.012 | I | 
 3108 | Death's Gaze Cluster | 487.197 | -1708.993 | I | 
 3109 | Fager | 91.054 | -1591.958 | I | 
-3110 | Farhome | 516.91 | -613.715 | I | 
+3110 | Farhome | 516.91 | -613.715 | I | I(H)
 3111 | Frobisher | -370.48 | -470.316 | TH | 
 3112 | Horgens | 216.121 | -1190.306 | I | 
 3113 | Interstellar Expeditions Base #22 | -734.294 | -1753.113 | IE | 
@@ -3121,7 +3121,7 @@ ID | Name | X | Y | Faction | Notes
 3119 | Nebula D77 | 705.298 | -1815.018 | I | 
 3120 | Pharos | -126.584 | -785.92 | I | 
 3121 | Rim Worlds Republic Outpost #11 | 777.948 | -1438.221 | RW | 
-3122 | Saggina | -605.874 | -2003.902 | I | 
+3122 | Saggina | -605.874 | -2003.902 | U | U(X)
 3123 | Star Cluster 1108 | 528.249 | -1890.273 | I | 
 3124 | Star Cluster 752 | 61.5 | -1374.51 | I | 
 3125 | Star Cluster 889 | -104.805 | -1724.985 | I | 

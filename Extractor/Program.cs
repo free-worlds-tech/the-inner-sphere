@@ -94,19 +94,34 @@ internal class Program
                 var x = info.Coordinates.X;
                 var y = info.Coordinates.Y;
                 var owner = "?";
-                var ownerNote = "";
+                var note = "";
                 for (int i = 0; i < mapNames.Length; i++)
                 {
                     var possibleOwner = info.Owners.GetOwner(mapNames[i]);
                     if (!String.IsNullOrEmpty(possibleOwner))
                     {
-                        owner = possibleOwner;
-                        ownerNote = info.Owners.GetOwnershipNote(mapNames[i]);
+                        owner = info.Owners.GetSimpleOwner(mapNames[i]);
+                        var ownerNote = info.Owners.GetOwnershipNote(mapNames[i]);
+                        if (ownerNote.Contains("Faction Capital", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            note = "Faction Capital";
+                        }
+                        if (!String.Equals(possibleOwner, owner))
+                        {
+                            if (String.IsNullOrEmpty(note))
+                            {
+                                note = possibleOwner;
+                            }
+                            else
+                            {
+                                note += $", {possibleOwner}";
+                            }
+                        }
                         break;
                     }
                 }
 
-                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {ownerNote}");
+                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {note}");
             }
         }
     }
@@ -183,7 +198,11 @@ internal class Program
                         && !String.Equals("U", possibleOwner)
                         && !String.Equals("I", possibleOwner))
                     {
-                        owner = possibleOwner;
+                        owner = info.Owners.GetSimpleOwner(maps[i]);
+                        if (!String.Equals(owner, possibleOwner))
+                        {
+                            ownerNote = possibleOwner;
+                        }
                         break;
                     }
                 }
