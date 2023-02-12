@@ -32,6 +32,8 @@ RD | Rasalhague Dominion | #B9E6FB
 RS | Republic of the Sphere | #949B79
 RT | Rim Territories | #C3B59B
 RU | Ragnarök Union | #C3B59B
+SE | Scorpion Empire | #C3B59B
+SL | Star League | #FCFCFC
 TamP | Tamar Pact | #CF1336
 TC | Taurian Concordat | #9B3F2A
 TD | Tortuga Dominions | #C3B59B
