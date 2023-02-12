@@ -1,19 +1,23 @@
 # The Inner Sphere
 
-This repo has a simple map plotter for BattleTech. It is written in C# using .Net 6. The console app requires a single parameter that is which map to generate. The map names are the files in the `./system-data/` directory such as `3025`, `3151`, or `all`. If you want to use alternate settings for map generation, a second parameter can be passed with the path to a settings json file. A third argument can provide an overlays json file to add elements, such as rectangles, to the generated map.
+This repo has a simple map plotter for BattleTech. It accepts several options to control map generation. The map opton is the name of a file in the `./system-data/` directory such as `3025`, `3151`, or `all`. The settings option controls the details of the generated svg file. The overlays option can be used to add elements, such as rectangles, to the generated map. In order to see all available options, use `--help`.
 
 ## Examples
 
 ```
-dotnet run 3025
+dotnet run -- --map 3025
 ```
 
 ```
-dotnet run 3049 mini
+dotnet run -- --map 3049 --settings mini
 ```
 
 ```
-dotnet run 3152 mini mid-3152-maps
+dotnet run -- --map 3152 --settings mini --overlays mid-3152-maps
+```
+
+```
+dotnet run -- --help
 ```
 
 ## Custom Settings

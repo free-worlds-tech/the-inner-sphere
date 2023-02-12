@@ -1,35 +1,49 @@
-﻿using System.Text.Json;
+﻿using System.CommandLine;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("The Inner Sphere!");
+        var mapOption = new Option<string>(
+            name: "--map",
+            getDefaultValue: () => "all",
+            description: "The name of the map data file"
+        );
 
-        string map = "all";
-        string settingsName = "default";
-        string? overlaysName = null;
-        if (args.Length == 1)
-        {
-            map = args[0].ToLower();
-        }
-        else if (args.Length == 2)
-        {
-            map = args[0].ToLower();
-            settingsName = args[1];
-        }
-        else if (args.Length == 3)
-        {
-            map = args[0].ToLower();
-            settingsName = args[1];
-            overlaysName = args[2];
-        }
-        else if (args.Length > 3)
-        {
-            Console.WriteLine("Unexpected number of arguments");
-            return;
-        }
+        var settingsOption = new Option<string>(
+            name: "--settings",
+            getDefaultValue: () => "default",
+            description: "The name of the settings file"
+        );
+
+        var overlaysOption = new Option<string?>(
+            name: "--overlays",
+            getDefaultValue: () => null,
+            description: "The name of the overlays file"
+        );
+
+        var factionsOption = new Option<string>(
+            name: "--factions",
+            getDefaultValue: () => "sarna",
+            description: "The name of the faction data file"
+        );
+
+        var rootCommand = new RootCommand("Map generator");
+        rootCommand.AddOption(mapOption);
+        rootCommand.AddOption(factionsOption);
+        rootCommand.AddOption(settingsOption);
+        rootCommand.AddOption(overlaysOption);
+
+        rootCommand.SetHandler((map, settings, overlays, factions) => {GenerateMap(map, settings, overlays, factions);}, mapOption, settingsOption, overlaysOption, factionsOption);
+
+        rootCommand.Invoke(args);
+    }
+
+    private static void GenerateMap(string map, string settingsName, string? overlaysName, string factionsName)
+    {
+        Console.WriteLine("The Inner Sphere!");
 
         string settingsFile = $"settings/{settingsName}.json";
         ProgramSettings settings = new ProgramSettings();
@@ -60,7 +74,7 @@ internal class Program
         Console.Write("Reading data files...");
 
         var planetRepo = new PlanetInfoRepository($"../system-data/{map}.table.md");
-        var factionRepo = new FactionInfoRepository("../sarna-data/factions.tsv");
+        var factionRepo = new FactionInfoRepository($"../faction-data/{factionsName}.table.md");
 
         Console.WriteLine(" Done!");
 
@@ -83,8 +97,6 @@ internal class Program
                 return;
             }
         }
-
-
         
         SystemColorMapping? systemPalette = null;
         if (String.Equals(settings.SystemColors, "faction", StringComparison.InvariantCultureIgnoreCase))
@@ -277,10 +289,10 @@ internal class Program
         {
             Directory.CreateDirectory("../output");
         }
-        var outputFile = $"../output/{map}.{settingsName}.svg";
+        var outputFile = $"../output/{map}.{factionsName}.{settingsName}.svg";
         if (!String.IsNullOrEmpty(overlaysName))
         {
-            outputFile = $"../output/{map}.{settingsName}.{overlaysName}.svg";
+            outputFile = $"../output/{map}.{factionsName}.{settingsName}.{overlaysName}.svg";
         }
         plotter.Write(outputFile);
 

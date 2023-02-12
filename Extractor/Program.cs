@@ -64,7 +64,7 @@ internal class Program
         Extract(planetRepo, 3152, "3152x", new string[] {"3152", "3151"});
         ExtractEarliestOwner(planetRepo, "first-faction");
 
-        ExtractFactionData(factionRepo, "factions");
+        ExtractFactionData(factionRepo, "sarna");
         
     }
 
