@@ -81,21 +81,44 @@ internal class Program
         var centerCoordinates = new SystemCoordinates(0,0);
         if (settings.Center != null)
         {
-            var matchingSystems = planetRepo.GetPlanetInfo(settings.Center);
-            if (matchingSystems.Count == 1)
+            IReadOnlyList<PlanetInfo> matchingSystems = new List<PlanetInfo>();
+            if (UInt32.TryParse(settings.Center, out uint systemId))
             {
-                centerCoordinates = matchingSystems[0].Coordinates;
+                matchingSystems = planetRepo.GetPlanetInfoById(systemId);
+                if (matchingSystems.Count == 1)
+                {
+                    centerCoordinates = matchingSystems[0].Coordinates;
+                }
+                else if (matchingSystems.Count == 0)
+                {
+                    Console.Error.WriteLine($"No system found with id: {settings.Center}");
+                    return;
+                }
+                else if (matchingSystems.Count > 1)
+                {
+                    Console.Error.WriteLine($"Multiple systems found with id: {settings.Center}");
+                    return;
+                }
             }
-            else if (matchingSystems.Count == 0)
+            else
             {
-                Console.Error.WriteLine($"No system found with name: {settings.Center}");
-                return;
+                matchingSystems = planetRepo.GetPlanetInfo(settings.Center);
+                if (matchingSystems.Count == 1)
+                {
+                    centerCoordinates = matchingSystems[0].Coordinates;
+                }
+                else if (matchingSystems.Count == 0)
+                {
+                    Console.Error.WriteLine($"No system found with name: {settings.Center}");
+                    return;
+                }
+                else if (matchingSystems.Count > 1)
+                {
+                    Console.Error.WriteLine($"Multiple systems found with name: {settings.Center}");
+                    return;
+                }
             }
-            else if (matchingSystems.Count > 1)
-            {
-                Console.Error.WriteLine($"Multiple systems found with name: {settings.Center}");
-                return;
-            }
+            
         }
         
         SystemColorMapping? systemPalette = null;

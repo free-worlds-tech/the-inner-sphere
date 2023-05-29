@@ -35,6 +35,12 @@ internal class PlanetInfoRepository
         return new List<PlanetInfo>(matches);
     }
 
+    public IReadOnlyList<PlanetInfo> GetPlanetInfoById(uint id)
+    {
+        var matches = _planets.Values.Where((v) => id == v.Id);
+        return new List<PlanetInfo>(matches);
+    }
+
     private void ParseSimpleDataFile(string file)
     {
         using (var reader = new StreamReader(file))
