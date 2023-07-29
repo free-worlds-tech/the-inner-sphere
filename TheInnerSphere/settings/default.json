@@ -9,5 +9,6 @@
     "SystemRadius":12,
     "LinkColors":"faction",
     "LinkStrokeWidth":1.5,
-    "LinkOpacity":0.3
+    "LinkOpacity":0.3,
+    "IncludeHPGLinks":true
 }

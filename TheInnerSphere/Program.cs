@@ -261,6 +261,7 @@ internal class Program
             LinkStrokeWidth = settings.LinkStrokeWidth,
             PrimaryFontSize = settings.TitleFontSize,
             SecondaryFontSize = settings.SubtitleFontSize,
+            IncludeHPGLines = settings.IncludeHPGLinks,
 
             // Todo...
             ImportantWorldMapping = importantWorldMapping,

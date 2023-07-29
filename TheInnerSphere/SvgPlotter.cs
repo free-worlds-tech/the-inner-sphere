@@ -3,7 +3,8 @@ internal class SvgPlotter
     public SvgPlotter(PlotterSettings settings)
     {
         _circles = new List<string>();
-        _lines = new List<string>();
+        _jumpLines = new List<string>();
+        _hpgLines = new List<string>();
         _text = new List<string>();
         _systems = new List<PlanetInfo>();
         _rectangles = new List<string>();
@@ -30,6 +31,7 @@ internal class SvgPlotter
         _importantMapping = settings.ImportantWorldMapping;
 
         _includeJumpLines = settings.IncludeJumpLines;
+        _includeHPGLines = settings.IncludeHPGLines;
         _includeSystemNames = settings.IncludeSystemNames;
 
         _primaryFontSize = settings.PrimaryFontSize;
@@ -62,7 +64,15 @@ internal class SvgPlotter
             color = _systemPalette(system);
         }
 
-        double overshoot = 30 * _scale;
+        double overshoot = 5 * _scale;
+        if (_includeJumpLines)
+        {
+            overshoot = 30 * _scale;
+        }
+        if (_includeHPGLines)
+        {
+            overshoot = 50 * _scale;
+        }
         if (transformedX > 0 && transformedX < _width && transformedY > 0 && transformedY < _height)
         {
             bool systemIsImportant = false;
@@ -109,7 +119,7 @@ internal class SvgPlotter
 
     public void Write(string file)
     {
-        if (_includeJumpLines)
+        if (_includeJumpLines || _includeHPGLines)
         {
             GenerateLines();
         }
@@ -118,7 +128,11 @@ internal class SvgPlotter
             writer.WriteLine("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
             writer.WriteLine($"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" height=\"{_height}\" width=\"{_width}\" >");
             writer.WriteLine($"  <rect height=\"{_height}\" width=\"{_width}\" fill=\"#000000\" />");
-            foreach (var line in _lines)
+            foreach (var line in _hpgLines)
+            {
+                writer.WriteLine($"  {line}");
+            }
+            foreach (var line in _jumpLines)
             {
                 writer.WriteLine($"  {line}");
             }
@@ -140,7 +154,8 @@ internal class SvgPlotter
 
     private void GenerateLines()
     {
-        _lines = new List<string>();
+        _jumpLines = new List<string>();
+        _hpgLines = new List<string>();
         for (int i = 0; i < _systems.Count; i++)
         {
             var system1 = _systems[i];
@@ -149,7 +164,7 @@ internal class SvgPlotter
             for (int j = i + 1; j < _systems.Count; j++)
             {
                 var system2 = _systems[j];
-                if (IsSingleJump(system1, system2))
+                if (_includeJumpLines && IsSingleJump(system1, system2))
                 {
                     (double x2, double y2) = TransformCoordinates(system2.Coordinates);
 
@@ -159,7 +174,19 @@ internal class SvgPlotter
                         color = _linkPalette(system1, system2);
                     }
                     string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"{_linkStrokeWidth}\" opacity=\"{_linkOpacity}\" />";
-                    _lines.Add(svg);
+                    _jumpLines.Add(svg);
+                }
+                else if (_includeHPGLines && IsWithinHPGDistance(system1, system2))
+                {
+                    (double x2, double y2) = TransformCoordinates(system2.Coordinates);
+
+                    string color = "#666666";
+                    if (_linkPalette != null)
+                    {
+                        color = _linkPalette(system1, system2);
+                    }
+                    string svg = $"<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" stroke=\"{color}\" stroke-width=\"{_linkStrokeWidth / 2}\" stroke-dasharray=\"3 2\" opacity=\"{_linkOpacity}\" />";
+                    _hpgLines.Add(svg);
                 }
             }
         }
@@ -171,6 +198,12 @@ internal class SvgPlotter
         return (distanceSquared <= 900);
     }
 
+    private bool IsWithinHPGDistance(PlanetInfo a, PlanetInfo b)
+    {
+        double distanceSquared = Math.Pow(a.Coordinates.X - b.Coordinates.X,2) + Math.Pow(a.Coordinates.Y - b.Coordinates.Y, 2);
+        return (distanceSquared <= 2500);
+    }
+
     private (double, double) TransformCoordinates(SystemCoordinates coordinates)
     {
         double transformedX = (_scale * (coordinates.X - _transformX)) + _centerX;
@@ -180,7 +213,8 @@ internal class SvgPlotter
 
     private List<PlanetInfo> _systems;
     private List<string> _circles;
-    private List<string> _lines;
+    private List<string> _jumpLines;
+    private List<string> _hpgLines;
     private List<string> _text;
     private List<string> _rectangles;
     private int _width;
@@ -197,6 +231,7 @@ internal class SvgPlotter
     private ImportantWorldMapping? _importantMapping;
     private int _systemRadius;
     private bool _includeJumpLines;
+    private bool _includeHPGLines;
     private bool _includeSystemNames;
     private int _primaryFontSize;
     private int _secondaryFontSize;

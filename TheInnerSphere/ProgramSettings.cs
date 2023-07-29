@@ -10,6 +10,7 @@ internal class ProgramSettings
         SubtitleFontSize = 6;
         LinkStrokeWidth = 1;
         LinkOpacity = 0.5;
+        IncludeHPGLinks = false;
     }
     public int Height { get; set; }
     public int Width { get; set; } 
@@ -33,4 +34,5 @@ internal class ProgramSettings
     public bool IncludeAbandonedSystems { get; set; }
     public bool IncludeUndiscoveredSystems { get; set; }
     public bool IncludeSystemsWithUnknownStatus { get; set; }
+    public bool IncludeHPGLinks { get; set; }
 }

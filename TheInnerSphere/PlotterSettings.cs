@@ -15,6 +15,7 @@ internal class PlotterSettings
         Scale = 10;
         SystemRadius = 12;
         IncludeJumpLines = true;
+        IncludeHPGLines = false;
         IncludeSystemNames = true;
         Center = new SystemCoordinates(0,0);
         PrimaryFontSize = 16;
@@ -34,6 +35,7 @@ internal class PlotterSettings
     public int Scale { get; set; }
     public int SystemRadius { get; set; }
     public bool IncludeJumpLines { get; set; }
+    public bool IncludeHPGLines { get; set; }
     public bool IncludeSystemNames { get; set; }
     public int PrimaryFontSize { get; set; }
     public int SecondaryFontSize { get; set; }
