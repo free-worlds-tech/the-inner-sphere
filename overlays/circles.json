@@ -1,0 +1,74 @@
+{
+    "Circles": [
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 100
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 200
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 300
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 400
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 500
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 600
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 700
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 800
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 900
+      },
+      {
+        "Center": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radius": 1000
+      }
+    ]
+}

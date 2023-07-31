@@ -308,6 +308,10 @@ internal class Program
         {
             plotter.Add(rect);
         }
+        foreach (var circle in overlays.Circles)
+        {
+            plotter.Add(circle);
+        }
 
         if (!Directory.Exists("../output"))
         {

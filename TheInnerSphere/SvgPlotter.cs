@@ -7,7 +7,7 @@ internal class SvgPlotter
         _hpgLines = new List<string>();
         _text = new List<string>();
         _systems = new List<PlanetInfo>();
-        _rectangles = new List<string>();
+        _overlays = new List<string>();
 
         _scale = settings.Scale;
 
@@ -51,7 +51,17 @@ internal class SvgPlotter
 
         string svg = $"<rect x=\"{x}\" y=\"{y}\" width=\"{width}\" height=\"{height}\" fill-opacity=\"0\" stroke=\"#cccccc\" />";
 
-        _rectangles.Add(svg);
+        _overlays.Add(svg);
+    }
+
+    public void Add(Circle circle)
+    {
+        (double transformedX, double transformedY) = TransformCoordinates(circle.Center);
+        double transformedRadius = circle.Radius * _scale;
+
+        string svg = $"<circle cx=\"{transformedX}\" cy=\"{transformedY}\" r=\"{transformedRadius}\" fill-opacity=\"0\" stroke=\"#cccccc\" />";
+
+        _overlays.Add(svg);
     }
 
     public void Add(PlanetInfo system)
@@ -140,9 +150,9 @@ internal class SvgPlotter
             {
                 writer.WriteLine($"  {circle}");
             }
-            foreach (var rectangle in _rectangles)
+            foreach (var overlay in _overlays)
             {
-                writer.WriteLine($"  {rectangle}");
+                writer.WriteLine($"  {overlay}");
             }
             foreach (var text in _text)
             {
@@ -216,7 +226,7 @@ internal class SvgPlotter
     private List<string> _jumpLines;
     private List<string> _hpgLines;
     private List<string> _text;
-    private List<string> _rectangles;
+    private List<string> _overlays;
     private int _width;
     private int _height;
     private double _centerX;
