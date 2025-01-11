@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 internal class Program
@@ -121,7 +122,7 @@ internal class Program
                     }
                 }
 
-                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {note}");
+                writer.WriteLine($"{id} | {name} | {x.ToString(CultureInfo.InvariantCulture)} | {y.ToString(CultureInfo.InvariantCulture)} | {owner} | {note}");
             }
         }
     }
@@ -207,7 +208,7 @@ internal class Program
                     }
                 }
 
-                writer.WriteLine($"{id} | {name} | {x} | {y} | {owner} | {ownerNote}");
+                writer.WriteLine($"{id} | {name} | {x.ToString(CultureInfo.InvariantCulture)} | {y.ToString(CultureInfo.InvariantCulture)} | {owner} | {ownerNote}");
             }
         }
     }

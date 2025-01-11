@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 
 internal class PlanetInfoRepository
@@ -55,12 +56,12 @@ internal class PlanetInfoRepository
                 var entries = line.Split('|', StringSplitOptions.TrimEntries);
 
                 _planets.Add(
-                    UInt32.Parse(entries[0]), 
+                    UInt32.Parse(entries[0], CultureInfo.InvariantCulture), 
                     new PlanetInfo(
-                        UInt32.Parse(entries[0]),
+                        UInt32.Parse(entries[0], CultureInfo.InvariantCulture),
                         entries[1],
-                        Double.Parse(entries[2]),
-                        Double.Parse(entries[3]),
+                        Double.Parse(entries[2], CultureInfo.InvariantCulture),
+                        Double.Parse(entries[3], CultureInfo.InvariantCulture),
                         entries[4],
                         entries[5]
                     )
